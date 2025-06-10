@@ -1,0 +1,202 @@
+html,
+body {
+  background-color: #181a20 !important;
+  min-height: 100vh;
+}
+
+/* Fondo general y layout */
+body,
+.page-bg {
+  background: #181a20;
+}
+
+/* Caja principal reutilizable */
+.perfil-main {
+  background: #23272f;
+  color: #fff;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+  border-radius: 1rem;
+  margin-top: 5rem;
+  padding: 2.5rem 2rem 2rem 2rem;
+  text-align: center;
+}
+
+/* Chips de datos personales */
+.perfil-chips {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+}
+.perfil-chip {
+  background: #2b3a55;
+  color: #e3eaf2;
+  border-radius: 2rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+  box-shadow: 0 2px 8px #0002;
+  transition: background 0.2s;
+}
+.perfil-chip i {
+  color: #90caf9;
+  font-size: 1.1rem;
+}
+
+/* Cards de publicaciones */
+.perfil-feed-card {
+  background: #23272f;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px #0004;
+  border: 1px solid #343a40;
+  padding: 1.2rem 1.5rem 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+.perfil-feed-card:hover {
+  box-shadow: 0 8px 32px #0006;
+  border-color: #90caf9;
+}
+
+/* Header de publicación */
+.perfil-feed-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  margin-bottom: 0.5rem;
+}
+.perfil-feed-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #90caf9;
+}
+.perfil-feed-nombre {
+  color: #90caf9;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-right: 0.5rem;
+}
+.perfil-feed-fecha {
+  color: #b0b3b8;
+  font-size: 0.97rem;
+  margin-left: 0.5rem;
+}
+
+/* Cuerpo de publicación */
+.perfil-feed-titulo {
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-bottom: 0.3rem;
+  color: #e3eaf2;
+  text-align: left;
+}
+.perfil-feed-mensaje {
+  color: #e3eaf2;
+  margin-bottom: 0.7rem;
+  text-align: left;
+}
+.perfil-feed-img {
+  border-radius: 1rem;
+  margin-top: 0.5rem;
+  max-width: 340px;
+  max-height: 340px;
+  object-fit: cover;
+  display: block;
+  margin-left: 0;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+/* Footer de publicación */
+.perfil-feed-footer {
+  border-top: 1px solid #343a40;
+  margin-top: 0.7rem;
+  padding-top: 0.5rem;
+  color: #90caf9;
+  font-size: 1.1rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+.perfil-feed-footer i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.perfil-feed-footer i.fa-heart {
+  color: #ff4d4d;
+  margin-right: 0.3rem;
+}
+.perfil-feed-footer i.fa-heart:hover {
+  color: #ff7b7b;
+}
+.perfil-feed-footer i.fa-comment {
+  color: #90caf9;
+  margin-right: 0.3rem;
+}
+.perfil-feed-footer i.fa-comment:hover {
+  color: #64b5f6;
+}
+
+/* Comentarios */
+.perfil-feed-comentarios {
+  margin-top: 0.7rem;
+  border-top: 1px solid #343a40;
+  padding: 0.7rem 0.5rem 0.3rem 0.5rem;
+  background: #20232a;
+  border-radius: 0 0 0.7rem 0.7rem;
+  text-align: left;
+  box-shadow: none;
+}
+.perfil-feed-comentario {
+  color: #b0b8c1;
+  font-size: 0.97rem;
+  margin-bottom: 0.2rem;
+  padding-left: 0.3rem;
+  text-align: left;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .perfil-feed-img {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    margin: 0 auto 1rem auto;
+  }
+  .perfil-main {
+    padding: 1rem 0.5rem 1.5rem 0.5rem;
+  }
+}
+
+@media (min-width: 701px) {
+  .perfil-feed-body {
+    display: block;
+  }
+  .perfil-feed-comentarios {
+    min-width: unset;
+    max-width: unset;
+    margin-left: 0;
+    margin-right: 0;
+    margin-top: 0.7rem;
+    border-top: 1px solid #343a40;
+    border-radius: 0 0 0.7rem 0.7rem;
+    box-shadow: none;
+    padding: 0.7rem 0.5rem 0.3rem 0.5rem;
+  }
+}
+
+@media (min-width: 1100px) {
+  .perfil-main {
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

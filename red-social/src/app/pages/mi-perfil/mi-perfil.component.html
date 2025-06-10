@@ -1,0 +1,96 @@
+<div class="page-bg container py-4">
+  <div class="perfil-portada">
+    <!-- Imagen de portada (hacerla dinámica en el futuro) -->
+    <img
+      class="portada-img"
+      src="https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1200&q=80"
+      alt="Portada"
+    />
+    <div class="perfil-avatar-wrapper">
+      <img class="perfil-avatar" [src]="usuario.avatarUrl" alt="Avatar" />
+      <button
+        class="perfil-edit-btn"
+        (click)="editarPerfil()"
+        title="Editar perfil"
+      >
+        <i class="fa fa-edit"></i>
+      </button>
+    </div>
+  </div>
+  <div class="perfil-info">
+    <h2 class="perfil-nombre">
+      {{ usuario.nombre }}
+      @if (usuario.verificado) {
+      <span class="perfil-badge" title="Verificado"
+        ><i class="fa fa-check-circle"></i
+      ></span>
+      }
+    </h2>
+    <div class="perfil-meta">
+      {{ usuario.seguidores | number }} seguidores
+      {{ usuario.siguiendo | number }} siguiendo
+    </div>
+    <div class="perfil-descripcion">
+      {{ usuario.descripcion }}
+    </div>
+  </div>
+  <div class="perfil-main">
+    <div class="perfil-chips">
+      <span class="perfil-chip">
+        <i class="fa fa-envelope"></i> {{ usuario.email }}
+      </span>
+      <span class="perfil-chip">
+        <i class="fa fa-birthday-cake"></i> {{ usuario.fechaNacimiento }}
+      </span>
+    </div>
+    <div class="perfil-publicaciones">
+      <h3 class="text-info mb-3">
+        <i class="fa fa-bullhorn"></i> Mis últimas publicaciones
+      </h3>
+      @for (pub of publicaciones; track pub.titulo) {
+      <div class="card perfil-feed-card mb-4">
+        <div class="perfil-feed-header">
+          <img
+            class="perfil-feed-avatar"
+            [src]="usuario.avatarUrl"
+            alt="Avatar"
+          />
+          <div>
+            <span class="perfil-feed-nombre">{{ usuario.nombre }}</span>
+            <span class="perfil-feed-fecha">{{ pub.fecha }}</span>
+          </div>
+        </div>
+        <div class="perfil-feed-body">
+          <h4 class="perfil-feed-titulo">{{ pub.titulo }}</h4>
+          <p class="perfil-feed-mensaje">{{ pub.mensaje }}</p>
+          @if (pub.imagen) {
+          <img [src]="pub.imagen" alt="Publicación" class="perfil-feed-img" />
+          }
+          <div class="perfil-feed-footer">
+            <span class="me-3">
+              <i class="fa fa-heart"></i> {{ pub.likes || 0 }}
+            </span>
+            <span>
+              <i class="fa fa-comment"></i> {{ pub.comentarios?.length || 0 }}
+            </span>
+          </div>
+          @if (pub.comentarios?.length) {
+          <div class="perfil-feed-comentarios">
+            @for (comentario of pub.comentarios; track comentario.usuario) {
+            <div class="perfil-feed-comentario">
+              <strong>{{ comentario.usuario }}: </strong>
+              <span>{{ comentario.texto }}</span>
+            </div>
+            }
+          </div>
+          }
+        </div>
+      </div>
+      } @empty {
+      <div class="alert alert-info text-center mt-4">
+        <i class="fa fa-info-circle"></i> No hay publicaciones.
+      </div>
+      }
+    </div>
+  </div>
+</div>

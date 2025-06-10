@@ -1,0 +1,44 @@
+<nav>
+  <div class="navbar-content">
+    <div class="navbar-logo">
+      <span>🌐</span>
+    </div>
+    <ul [class.navbar-mobile-open]="menuAbierto" class="navbar-links">
+      <li>
+        <a
+          routerLink="/publicaciones"
+          routerLinkActive="active"
+          (click)="cerrarMenu()"
+          >Publicaciones</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/mi-perfil"
+          routerLinkActive="active"
+          (click)="cerrarMenu()"
+          >Mi Perfil</a
+        >
+      </li>
+      <li>
+        <a routerLink="/login" routerLinkActive="active" (click)="cerrarMenu()"
+          >Login</a
+        >
+      </li>
+      <li>
+        <a
+          routerLink="/register"
+          routerLinkActive="active"
+          (click)="cerrarMenu()"
+          >Registrarse</a
+        >
+      </li>
+    </ul>
+    <button class="navbar-hamburger" (click)="toggleMenu()">
+      <i class="fa fa-bars"></i>
+    </button>
+    @if (menuAbierto) {
+    <div class="navbar-overlay" (click)="cerrarMenu()"></div>
+    }
+  </div>
+</nav>

@@ -1,0 +1,95 @@
+/* Portada y avatar solo para perfil */
+.perfil-portada {
+  background: linear-gradient(135deg, #23272f 60%, #2b3a55 100%);
+  height: 220px;
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  overflow: visible;
+  padding-bottom: 75px;
+}
+.portada-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  filter: brightness(0.7);
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+}
+.perfil-avatar-wrapper {
+  position: absolute;
+  left: 50%;
+  bottom: -60px;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  z-index: 2;
+}
+.perfil-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 5px solid #23272f;
+  box-shadow: 0 4px 24px #0008;
+  background: #23272f;
+  object-fit: cover;
+  position: relative;
+}
+.perfil-edit-btn {
+  position: absolute;
+  right: -10px;
+  bottom: 10px;
+  background: linear-gradient(90deg, #90caf9 60%, #64b5f6 100%);
+  color: #181a20;
+  border: none;
+  border-radius: 50%;
+  width: 42px;
+  height: 42px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+  box-shadow: 0 4px 16px #0002;
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  z-index: 3;
+}
+.perfil-edit-btn:hover {
+  background: linear-gradient(90deg, #64b5f6 60%, #90caf9 100%);
+  color: #23272f;
+  box-shadow: 0 8px 24px #0003;
+}
+
+/* Info principal del perfil */
+.perfil-info {
+  margin-top: 80px;
+  text-align: center;
+}
+.perfil-nombre {
+  font-size: 2rem;
+  color: #e3eaf2;
+  font-weight: 700;
+  margin-bottom: 0.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+.perfil-badge {
+  color: #00e676;
+  font-size: 1.3rem;
+}
+.perfil-meta {
+  color: #90caf9;
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+.perfil-descripcion {
+  color: #b0b8c1;
+  font-size: 1.1rem;
+  margin-top: 0.5rem;
+}

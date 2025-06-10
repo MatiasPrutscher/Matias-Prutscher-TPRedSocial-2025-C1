@@ -1,0 +1,54 @@
+<div class="login-container">
+  <form
+    [formGroup]="loginForm"
+    (ngSubmit)="onSubmit()"
+    class="login-form"
+    autocomplete="off"
+  >
+    <h2>Iniciar Sesión</h2>
+
+    <!-- Usuario o correo -->
+    <div class="form-group">
+      <span class="icon"><i class="fa fa-user"></i></span>
+      <input
+        formControlName="userOrEmail"
+        type="text"
+        id="userOrEmail"
+        placeholder="Usuario o correo"
+        required
+        [class.invalid]="getErrorMessage('userOrEmail')"
+      />
+      <div class="error-message">{{ getErrorMessage("userOrEmail") }}</div>
+    </div>
+
+    <!-- Contraseña -->
+    <div class="form-group password-group">
+      <span class="icon"><i class="fa fa-lock"></i></span>
+      <input
+        formControlName="password"
+        [type]="passwordVisible ? 'text' : 'password'"
+        id="password"
+        placeholder="Contraseña"
+        required
+        [class.invalid]="getErrorMessage('password')"
+      />
+      <button
+        type="button"
+        class="toggle-password"
+        (click)="togglePasswordVisibility()"
+        tabindex="-1"
+      >
+        <i
+          class="fa"
+          [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+        ></i>
+      </button>
+      <div class="error-message">{{ getErrorMessage("password") }}</div>
+    </div>
+
+    <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+      @if (isSubmitting) {
+      <span class="spinner"></span> Ingresando... } @else { Ingresar }
+    </button>
+  </form>
+</div>

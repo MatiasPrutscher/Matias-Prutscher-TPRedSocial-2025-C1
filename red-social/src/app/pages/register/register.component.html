@@ -1,0 +1,175 @@
+<div class="register-container">
+  <form
+    [formGroup]="registerForm"
+    (ngSubmit)="onSubmit()"
+    class="register-form"
+    autocomplete="off"
+  >
+    <h2>Registro</h2>
+    <!-- Nombre -->
+    <div class="form-group">
+      <span class="icon"><i class="fa fa-user"></i></span>
+      <input
+        formControlName="name"
+        type="text"
+        id="name"
+        placeholder="Nombre"
+        required
+        [class.invalid]="getErrorMessage('name')"
+      />
+      <div class="error-message">{{ getErrorMessage("name") }}</div>
+    </div>
+
+    <!-- Apellido -->
+    <div class="form-group">
+      <span class="icon"><i class="fa fa-user"></i></span>
+      <input
+        formControlName="surname"
+        type="text"
+        id="surname"
+        placeholder="Apellido"
+        required
+        [class.invalid]="getErrorMessage('surname')"
+      />
+      <div class="error-message">{{ getErrorMessage("surname") }}</div>
+    </div>
+
+    <!-- Correo electrónico -->
+    <div class="form-group">
+      <span class="icon"><i class="fa fa-envelope"></i></span>
+      <input
+        formControlName="email"
+        type="email"
+        id="email"
+        placeholder="Correo electrónico"
+        required
+        [class.invalid]="getErrorMessage('email')"
+      />
+      <div class="error-message">{{ getErrorMessage("email") }}</div>
+    </div>
+
+    <!-- Nombre de usuario -->
+    <div class="form-group">
+      <span class="icon"><i class="fa fa-id-badge"></i></span>
+      <input
+        formControlName="username"
+        type="text"
+        id="username"
+        placeholder="Nombre de usuario"
+        required
+        [class.invalid]="getErrorMessage('username')"
+      />
+      <div class="error-message">{{ getErrorMessage("username") }}</div>
+    </div>
+
+    <!-- Contraseña -->
+    <div class="form-group password-group">
+      <span class="icon"><i class="fa fa-lock"></i></span>
+      <input
+        formControlName="password"
+        [type]="passwordVisible ? 'text' : 'password'"
+        id="password"
+        placeholder="Contraseña"
+        required
+        (input)="onPasswordInput()"
+        [class.invalid]="getErrorMessage('password')"
+      />
+      <button
+        type="button"
+        class="toggle-password"
+        (click)="togglePasswordVisibility()"
+        tabindex="-1"
+      >
+        <i
+          class="fa"
+          [ngClass]="passwordVisible ? 'fa-eye-slash' : 'fa-eye'"
+        ></i>
+      </button>
+      <div class="error-message">{{ getErrorMessage("password") }}</div>
+      @if (passwordStrength) {
+      <div class="password-strength" [ngClass]="passwordStrength.toLowerCase()">
+        Fuerza: {{ passwordStrength }}
+      </div>
+      }
+    </div>
+
+    <!-- Repetir contraseña -->
+    <div class="form-group password-group">
+      <span class="icon"><i class="fa fa-lock"></i></span>
+      <input
+        formControlName="confirmPassword"
+        [type]="confirmPasswordVisible ? 'text' : 'password'"
+        id="confirmPassword"
+        placeholder="Repetir contraseña"
+        required
+        [class.invalid]="getErrorMessage('confirmPassword')"
+      />
+      <button
+        type="button"
+        class="toggle-password"
+        (click)="toggleConfirmPasswordVisibility()"
+        tabindex="-1"
+      >
+        <i
+          class="fa"
+          [ngClass]="confirmPasswordVisible ? 'fa-eye-slash' : 'fa-eye'"
+        ></i>
+      </button>
+      <div class="error-message">{{ getErrorMessage("confirmPassword") }}</div>
+    </div>
+
+    <!-- Fecha de nacimiento -->
+    <div class="form-group full-width">
+      <span class="icon"><i class="fa fa-calendar"></i></span>
+      <input
+        formControlName="dateOfBirth"
+        type="date"
+        id="dateOfBirth"
+        required
+        [class.invalid]="getErrorMessage('dateOfBirth')"
+      />
+      <div class="error-message">{{ getErrorMessage("dateOfBirth") }}</div>
+    </div>
+
+    <!-- Descripción breve -->
+    <div class="form-group full-width">
+      <span class="icon"><i class="fa fa-info-circle"></i></span>
+      <textarea
+        formControlName="description"
+        id="description"
+        placeholder="Descripción breve"
+      ></textarea>
+    </div>
+
+    <!-- Imagen de perfil -->
+    <div class="form-group full-width file-group">
+      <label for="profileImage" class="file-label">
+        <i class="fa fa-image"></i> Imagen de Perfil
+      </label>
+      <input
+        type="file"
+        id="profileImage"
+        (change)="onFileChange($event)"
+        accept="image/*"
+      />
+      <div class="error-message">{{ imageError }}</div>
+      @if (profilePreview) {
+      <div class="avatar-preview-wrapper">
+        <img [src]="profilePreview" class="avatar-preview" alt="Avatar" />
+        <button
+          type="button"
+          class="remove-image-btn"
+          (click)="removeImage()"
+          title="Quitar imagen"
+        >
+          <i class="fa fa-times"></i>
+        </button>
+      </div>
+      }
+    </div>
+    <button type="submit" class="btn btn-primary" [disabled]="isSubmitting">
+      @if (isSubmitting) {
+      <span class="spinner"></span> Registrando... } @else { Registrarse }
+    </button>
+  </form>
+</div>

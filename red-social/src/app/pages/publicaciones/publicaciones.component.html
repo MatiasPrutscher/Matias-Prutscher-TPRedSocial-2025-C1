@@ -1,0 +1,49 @@
+<div class="page-bg container py-4">
+  <div class="perfil-main">
+    <h3 class="text-info mb-3"><i class="fa fa-bullhorn"></i> Publicaciones</h3>
+    @for (pub of publicaciones; track pub.titulo) {
+    <div class="card perfil-feed-card mb-4">
+      <div class="perfil-feed-header">
+        <img
+          class="perfil-feed-avatar"
+          src="https://i.pinimg.com/736x/6c/b5/4f/6cb54fd9dc5a20f1399faf45cb12c8c3.jpg"
+          alt="Avatar"
+        />
+        <div>
+          <span class="perfil-feed-nombre">Matias Prutscher</span>
+          <span class="perfil-feed-fecha">{{ pub.fecha }}</span>
+        </div>
+      </div>
+      <div class="perfil-feed-body">
+        <h4 class="perfil-feed-titulo">{{ pub.titulo }}</h4>
+        <p class="perfil-feed-mensaje">{{ pub.mensaje }}</p>
+        @if (pub.imagen) {
+        <img [src]="pub.imagen" alt="Publicación" class="perfil-feed-img" />
+        }
+        <div class="perfil-feed-footer">
+          <span class="me-3">
+            <i class="fa fa-heart"></i> {{ pub.likes || 0 }}
+          </span>
+          <span>
+            <i class="fa fa-comment"></i> {{ pub.comentarios?.length || 0 }}
+          </span>
+        </div>
+        @if (pub.comentarios?.length) {
+        <div class="perfil-feed-comentarios">
+          @for (comentario of pub.comentarios; track comentario.usuario) {
+          <div class="perfil-feed-comentario">
+            <strong>{{ comentario.usuario }}: </strong>
+            <span>{{ comentario.texto }}</span>
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+    } @empty {
+    <div class="alert alert-info text-center mt-4">
+      <i class="fa fa-info-circle"></i> No hay publicaciones.
+    </div>
+    }
+  </div>
+</div>
