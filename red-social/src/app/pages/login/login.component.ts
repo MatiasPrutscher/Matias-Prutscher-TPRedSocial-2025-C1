@@ -7,6 +7,8 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { NgClass } from '@angular/common';
+import { AuthService } from '../../services/auth/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -20,7 +22,11 @@ export class LoginComponent {
   passwordVisible = false;
   isSubmitting = false;
 
-  constructor(private fb: FormBuilder) {
+  constructor(
+    private fb: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.loginForm = this.fb.group({
       userOrEmail: ['', Validators.required],
       password: ['', Validators.required],
@@ -49,12 +55,19 @@ export class LoginComponent {
 
   onSubmit() {
     this.isSubmitting = true;
+    const { userOrEmail, password } = this.loginForm.value;
     if (this.loginForm.valid) {
-      // Aquí iría la lógica real de login
-      setTimeout(() => {
-        this.isSubmitting = false;
-        // Redirigir o mostrar éxito
-      }, 1200);
+      this.authService.login(userOrEmail, password).subscribe({
+        next: (usuario) => {
+          this.authService.saveUser(usuario);
+          console.log('Usuario logueado:', usuario);
+          this.router.navigate(['/publicaciones']);
+        },
+        error: (err) => {
+          alert('Error en el login: ' + (err.error?.message || ''));
+          this.isSubmitting = false;
+        },
+      });
     } else {
       this.isSubmitting = false;
       this.loginForm.markAllAsTouched();

@@ -7,6 +7,8 @@ import {
   FormsModule,
   ReactiveFormsModule,
 } from '@angular/forms';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth/auth.service';
 
 @Component({
   selector: 'app-register',
@@ -23,7 +25,11 @@ export class RegisterComponent {
   imageError: string = '';
   isSubmitting = false;
 
-  constructor(private formBuilder: FormBuilder) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private authService: AuthService,
+    private router: Router
+  ) {
     this.registerForm = this.formBuilder.group(
       {
         name: ['', Validators.required],
@@ -57,13 +63,38 @@ export class RegisterComponent {
   onSubmit() {
     this.isSubmitting = true;
     if (this.registerForm.valid && !this.imageError) {
-      // Simulo un registro
-      setTimeout(() => {
-        this.isSubmitting = false;
-        alert('¡Registro exitoso!');
-        this.registerForm.reset();
-        this.profilePreview = null;
-      }, 1500);
+      const formData = new FormData();
+      formData.append('nombre', this.registerForm.value.name);
+      formData.append('apellido', this.registerForm.value.surname);
+      formData.append('mail', this.registerForm.value.email);
+      formData.append('nombreUsuario', this.registerForm.value.username);
+      formData.append('password', this.registerForm.value.password);
+      formData.append(
+        'repetirPassword',
+        this.registerForm.value.confirmPassword
+      );
+      // Convierte la fecha a dd-mm-aaaa si es necesario
+      const fecha = this.registerForm.value.dateOfBirth;
+      if (fecha) {
+        const [yyyy, mm, dd] = fecha.split('-'); // yyyy-mm-dd
+        formData.append('fechaNacimiento', `${dd}-${mm}-${yyyy}`);
+      }
+      formData.append('descripcion', this.registerForm.value.description || '');
+      formData.append('perfil', 'usuario');
+      if (this.registerForm.value.profileImage) {
+        formData.append('imagen', this.registerForm.value.profileImage);
+      }
+      this.authService.register(formData).subscribe({
+        next: (usuario) => {
+          this.authService.saveUser(usuario);
+          console.log('Usuario registrado:', usuario);
+          this.router.navigate(['/publicaciones']);
+        },
+        error: (err) => {
+          alert('Error en el registro: ' + (err.error?.message || ''));
+          this.isSubmitting = false;
+        },
+      });
     } else {
       this.isSubmitting = false;
       this.registerForm.markAllAsTouched();
