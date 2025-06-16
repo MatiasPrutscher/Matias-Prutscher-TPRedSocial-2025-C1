@@ -1,9 +1,10 @@
 <nav>
   <div class="navbar-content">
     <div class="navbar-logo">
-      <span>🌐</span>
+      <span routerLink="/publicaciones">🌐</span>
     </div>
     <ul [class.navbar-mobile-open]="menuAbierto" class="navbar-links">
+      @if (authService.getUser()) {
       <li>
         <a
           routerLink="/publicaciones"
@@ -21,6 +22,12 @@
         >
       </li>
       <li>
+        <a href="#" class="logout-link" (click)="logout($event)">
+          <i class="fa fa-sign-out-alt"></i> Cerrar sesión
+        </a>
+      </li>
+      } @if (!authService.getUser()) {
+      <li>
         <a routerLink="/login" routerLinkActive="active" (click)="cerrarMenu()"
           >Login</a
         >
@@ -33,6 +40,7 @@
           >Registrarse</a
         >
       </li>
+      }
     </ul>
     <button class="navbar-hamburger" (click)="toggleMenu()">
       <i class="fa fa-bars"></i>

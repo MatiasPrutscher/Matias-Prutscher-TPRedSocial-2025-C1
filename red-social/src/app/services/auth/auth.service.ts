@@ -21,9 +21,15 @@ export class AuthService {
   }
 
   //Guarda los datos del usuario (o token) en localStorage.
-
   saveUser(userData: any): void {
-    localStorage.setItem('user', JSON.stringify(userData));
+    localStorage.setItem('user', JSON.stringify(userData.usuario || userData));
+    if (userData.token) {
+      localStorage.setItem('token', userData.token);
+    }
+  }
+
+  getToken(): string | null {
+    return localStorage.getItem('token');
   }
 
   // Obtiene los datos del usuario guardados en localStorage.
@@ -35,5 +41,6 @@ export class AuthService {
   //Elimina los datos del usuario de localStorage (logout).
   logout(): void {
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   }
 }

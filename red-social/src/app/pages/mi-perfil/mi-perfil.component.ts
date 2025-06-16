@@ -7,6 +7,7 @@ import {
 } from '../../interfaces/red-social-model';
 import { UsuarioService } from '../../services/usuario/usuario.service';
 import { PublicacionService } from '../../services/publicacion/publicacion.service';
+import { AuthService } from '../../services/auth/auth.service'; // Agregá este import ☺
 
 @Component({
   selector: 'app-mi-perfil',
@@ -31,25 +32,30 @@ export class MiPerfilComponent implements OnInit {
 
   constructor(
     private usuarioService: UsuarioService,
-    private publicacionService: PublicacionService
+    private publicacionService: PublicacionService,
+    public authService: AuthService
   ) {}
 
   ngOnInit() {
     this.usuarioService.getPerfil().subscribe((usuario) => {
       this.usuario = usuario;
     });
-    this.publicacionService.getPublicaciones().subscribe((pubs) => {
-      this.publicaciones = pubs;
-    });
+    this.publicacionService
+      .getPublicaciones({
+        usuario: this.authService.getUser()?._id,
+        orden: 'fecha',
+        limit: 3,
+      })
+      .subscribe((pubs) => {
+        this.publicaciones = pubs;
+      });
   }
 
   agregarPublicacion(pub: Publicacion) {
-    this.publicacionService.agregarPublicacion(pub);
     this.publicaciones = [pub, ...this.publicaciones];
   }
 
   agregarComentario(index: number, comentario: Comentario) {
-    this.publicacionService.agregarComentario(index, comentario);
     this.publicaciones[index].comentarios =
       this.publicaciones[index].comentarios || [];
     this.publicaciones[index].comentarios!.push(comentario);

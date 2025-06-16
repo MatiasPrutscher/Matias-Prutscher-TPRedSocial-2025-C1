@@ -50,5 +50,19 @@
       @if (isSubmitting) {
       <span class="spinner"></span> Ingresando... } @else { Ingresar }
     </button>
+    <!-- Botones de inicio rápido para testeo -->
+    <div class="quick-login-info">Acceso rápido</div>
+    <div class="quick-login-circles">
+      @for (user of quickUsers; track user.label) {
+      <button
+        type="button"
+        class="quick-login-circle"
+        (click)="quickLogin(user.userOrEmail, user.password)"
+        [title]="'Usuario ' + user.label"
+      >
+        {{ user.label }}
+      </button>
+      }
+    </div>
   </form>
 </div>

@@ -22,6 +22,24 @@ export class LoginComponent {
   passwordVisible = false;
   isSubmitting = false;
 
+  quickUsers = [
+    {
+      label: '1',
+      userOrEmail: 'usuario1@mail.com.ar',
+      password: 'ContraseñaUsuario1',
+    },
+    {
+      label: '2',
+      userOrEmail: 'usuario2@mail.com.ar',
+      password: 'ContraseñaUsuario2',
+    },
+    {
+      label: '3',
+      userOrEmail: 'usuario3@mail.com.ar',
+      password: 'ContraseñaUsuario3',
+    },
+  ];
+
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -55,8 +73,8 @@ export class LoginComponent {
 
   onSubmit() {
     this.isSubmitting = true;
-    const { userOrEmail, password } = this.loginForm.value;
     if (this.loginForm.valid) {
+      const { userOrEmail, password } = this.loginForm.value;
       this.authService.login(userOrEmail, password).subscribe({
         next: (usuario) => {
           this.authService.saveUser(usuario);
@@ -72,5 +90,10 @@ export class LoginComponent {
       this.isSubmitting = false;
       this.loginForm.markAllAsTouched();
     }
+  }
+
+  quickLogin(userOrEmail: string, password: string) {
+    this.loginForm.patchValue({ userOrEmail, password });
+    this.onSubmit();
   }
 }

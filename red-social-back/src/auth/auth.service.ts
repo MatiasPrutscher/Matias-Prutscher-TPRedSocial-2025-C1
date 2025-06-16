@@ -7,11 +7,13 @@ import * as bcrypt from 'bcryptjs';
 import { v4 as uuidv4 } from 'uuid';
 import * as path from 'path';
 import * as fs from 'fs';
+import { JwtService } from '@nestjs/jwt';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectModel(Usuario.name) private usuarioModel: Model<UsuarioDocument>,
+    private jwtService: JwtService,
   ) {}
 
   async register(
@@ -72,8 +74,17 @@ export class AuthService {
       throw new UnauthorizedException('Contraseña incorrecta');
     }
 
+    // Generar token
+    const payload = {
+      sub: usuario._id,
+      mail: usuario.mail,
+      nombreUsuario: usuario.nombreUsuario,
+      perfil: usuario.perfil,
+    };
+    const token = this.jwtService.sign(payload);
+
     // No devolver la contraseña
     const { password: _, ...usuarioSinPassword } = usuario.toObject();
-    return usuarioSinPassword;
+    return { usuario: usuarioSinPassword, token };
   }
 }

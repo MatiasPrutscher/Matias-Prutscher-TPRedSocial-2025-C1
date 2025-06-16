@@ -1,28 +1,140 @@
 <div class="page-bg container py-4">
   <div class="perfil-main">
     <h3 class="text-info mb-3"><i class="fa fa-bullhorn"></i> Publicaciones</h3>
-    @for (pub of publicaciones; track pub.titulo) {
+    <div class="mb-3 d-flex justify-content-between align-items-center">
+      <div>
+        <button
+          (click)="cambiarOrden('fecha')"
+          class="publicacion-btn-switch"
+          [class.active]="orden === 'fecha'"
+          type="button"
+        >
+          Más recientes
+        </button>
+        <button
+          (click)="cambiarOrden('likes')"
+          class="publicacion-btn-switch"
+          [class.active]="orden === 'likes'"
+          type="button"
+        >
+          Más populares
+        </button>
+      </div>
+    </div>
+
+    <!-- Formulario para crear publicación -->
+    <div class="publicacion-form-minimal mb-4">
+      <form (ngSubmit)="onSubmit()" autocomplete="off">
+        <div class="publicacion-form-row gap-2">
+          <img
+            class="publicacion-avatar"
+            [src]="getAvatarUrl(authService.getUser())"
+            alt="avatar"
+          />
+          <input
+            type="text"
+            name="titulo"
+            [(ngModel)]="nuevaPublicacion.titulo"
+            placeholder="Título"
+            maxlength="80"
+            class="publicacion-input"
+            required
+          />
+        </div>
+        <div class="publicacion-form-row gap-2 mt-2">
+          <textarea
+            name="mensaje"
+            [(ngModel)]="nuevaPublicacion.mensaje"
+            placeholder="¿Qué estás pensando, {{
+              authService.getUser()?.nombre
+            }}?"
+            maxlength="500"
+            class="publicacion-input"
+            required
+            rows="2"
+          ></textarea>
+        </div>
+        <div class="publicacion-form-row gap-2 mt-2 justify-content-between">
+          <label for="fileInput" class="publicacion-file-label">
+            <i class="fa fa-image"></i> Foto/video
+          </label>
+          <input
+            type="file"
+            name="imagen"
+            (change)="onFileChange($event)"
+            accept="image/*"
+            class="publicacion-file"
+            id="fileInput"
+            hidden
+          />
+          <button
+            type="submit"
+            class="publicacion-btn"
+            [disabled]="
+              isSubmitting ||
+              !nuevaPublicacion.titulo ||
+              !nuevaPublicacion.mensaje
+            "
+          >
+            Publicar
+          </button>
+        </div>
+        @if (errorMsg) {
+        <span class="error-message">{{ errorMsg }}</span>
+        }
+      </form>
+    </div>
+
+    <!-- LISTADO DE PUBLICACIONES -->
+    @if (publicaciones.length > 0) { @for (pub of publicaciones; track pub._id)
+    {
     <div class="card perfil-feed-card mb-4">
       <div class="perfil-feed-header">
         <img
           class="perfil-feed-avatar"
-          src="https://i.pinimg.com/736x/6c/b5/4f/6cb54fd9dc5a20f1399faf45cb12c8c3.jpg"
+          [src]="getAvatarUrl(pub.usuario)"
           alt="Avatar"
         />
         <div>
-          <span class="perfil-feed-nombre">Matias Prutscher</span>
-          <span class="perfil-feed-fecha">{{ pub.fecha }}</span>
+          <span class="perfil-feed-nombre">{{ pub.usuario?.nombre }}</span>
+          <span class="perfil-feed-fecha">{{
+            pub.createdAt | date : "dd/MM/yyyy"
+          }}</span>
         </div>
+        @if ( pub.usuario?._id === authService.getUser()?._id ||
+        authService.getUser()?.perfil === 'administrador' ) {
+        <button
+          class="btn-eliminar-publicacion-x"
+          (click)="abrirModalConfirmar(pub._id)"
+          title="Eliminar publicación"
+        >
+          ×
+        </button>
+        }
       </div>
       <div class="perfil-feed-body">
         <h4 class="perfil-feed-titulo">{{ pub.titulo }}</h4>
         <p class="perfil-feed-mensaje">{{ pub.mensaje }}</p>
         @if (pub.imagen) {
-        <img [src]="pub.imagen" alt="Publicación" class="perfil-feed-img" />
+        <img
+          [src]="getImagenUrl(pub.imagen)"
+          alt="Publicación"
+          class="perfil-feed-img"
+        />
         }
         <div class="perfil-feed-footer">
           <span class="me-3">
-            <i class="fa fa-heart"></i> {{ pub.likes || 0 }}
+            <i
+              class="fa fa-heart"
+              [class.liked]="isLikedByCurrentUser(pub)"
+              [class.not-liked]="!isLikedByCurrentUser(pub)"
+              (click)="toggleLike(pub)"
+              style="cursor: pointer"
+              title="{{
+                isLikedByCurrentUser(pub) ? 'Quitar like' : 'Dar like'
+              }}"
+            ></i>
+            {{ pub.likes || 0 }}
           </span>
           <span>
             <i class="fa fa-comment"></i> {{ pub.comentarios?.length || 0 }}
@@ -40,10 +152,72 @@
         }
       </div>
     </div>
-    } @empty {
+    } } @else {
     <div class="alert alert-info text-center mt-4">
       <i class="fa fa-info-circle"></i> No hay publicaciones.
     </div>
     }
+    <div>
+      <button
+        (click)="paginaAnterior()"
+        class="publicacion-btn-switch"
+        [disabled]="pagina === 0"
+        type="button"
+      >
+        Anterior
+      </button>
+      <button
+        (click)="paginaSiguiente()"
+        class="publicacion-btn-switch"
+        type="button"
+      >
+        Siguiente
+      </button>
+    </div>
   </div>
 </div>
+
+<!-- Modal de confirmación -->
+@if (modalConfirmar.visible) {
+<div class="modal-backdrop" (click)="cerrarModalConfirmar()"></div>
+<div class="modal">
+  <div class="modal-content">
+    <div class="modal-icon info">
+      <i class="fa fa-question-circle"></i>
+    </div>
+    <h4>{{ modalConfirmar.titulo }}</h4>
+    <p>{{ modalConfirmar.mensaje }}</p>
+    <div class="modal-actions">
+      <button (click)="confirmarEliminarPublicacion()" class="btn btn-danger">
+        <i class="fa fa-trash"></i> Sí, eliminar
+      </button>
+      <button (click)="cerrarModalConfirmar()" class="btn btn-secondary">
+        Cancelar
+      </button>
+    </div>
+    <button class="modal-close" (click)="cerrarModalConfirmar()">
+      &times;
+    </button>
+  </div>
+</div>
+}
+
+<!-- Modal de error -->
+@if (modalError.visible) {
+<div class="modal-backdrop" (click)="cerrarModalError()"></div>
+<div class="modal">
+  <div class="modal-content">
+    <div class="modal-icon error">
+      <i class="fa fa-exclamation-circle"></i>
+    </div>
+    <h4>Error</h4>
+    <p>{{ modalError.mensaje }}</p>
+    <div class="modal-actions">
+      <button (click)="cerrarModalError()" class="btn btn-primary">
+        Cerrar
+      </button>
+    </div>
+    <button class="modal-close" (click)="cerrarModalError()">&times;</button>
+  </div>
+</div>
+}
