@@ -7,12 +7,15 @@ import {
   HttpCode,
   HttpStatus,
   BadRequestException,
+  Req,
+  UseGuards,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { CreateUsuarioDto } from '../usuarios/dto/create-usuario.dto';
 import { AuthService } from './auth.service';
 import { plainToInstance } from 'class-transformer';
 import { validate } from 'class-validator';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('auth')
 export class AuthController {
@@ -42,8 +45,8 @@ export class AuthController {
     const errors = await validate(dtoInstance);
     if (errors.length > 0) {
       const messages = errors
-        .filter(err => err.constraints)
-        .map(err => Object.values(err.constraints!))
+        .filter((err) => err.constraints)
+        .map((err) => Object.values(err.constraints!))
         .flat();
       throw new BadRequestException(messages);
     }
@@ -58,8 +61,23 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   async login(
     @Body('mailOrUser') mailOrUser: string,
-    @Body('password') password: string
+    @Body('password') password: string,
   ) {
     return this.authService.login(mailOrUser, password);
+  }
+
+  @Post('autorizar')
+  @UseGuards(AuthGuard('jwt'))
+  async autorizar(@Req() req) {
+    return req.user;
+  }
+
+  @Post('refrescar')
+  @UseGuards(AuthGuard('jwt'))
+  async refrescar(@Req() req) {
+    // Genera un nuevo token con la misma payload y 15 min más
+    const user = req.user;
+    const token = this.authService.generarToken(user);
+    return { token };
   }
 }

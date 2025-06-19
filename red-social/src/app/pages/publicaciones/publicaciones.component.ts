@@ -3,6 +3,7 @@ import { PublicacionService } from '../../services/publicacion/publicacion.servi
 import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-publicaciones',
@@ -121,13 +122,13 @@ export class PublicacionesComponent implements OnInit {
   getImagenUrl(imagen: string) {
     if (!imagen) return 'assets/avatar-default.png';
     if (imagen.startsWith('http')) return imagen;
-    return 'http://localhost:3000' + imagen;
+    return environment.assetsUrl + imagen;
   }
 
   getAvatarUrl(usuario: any) {
     if (usuario?.imagen) {
       if (usuario.imagen.startsWith('http')) return usuario.imagen;
-      return 'http://localhost:3000' + usuario.imagen;
+      return environment.assetsUrl + usuario.imagen;
     }
     return 'assets/avatar-default.png';
   }

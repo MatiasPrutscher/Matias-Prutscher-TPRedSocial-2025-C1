@@ -1,4 +1,9 @@
-import { Injectable, ConflictException, UnauthorizedException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  UnauthorizedException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { Usuario, UsuarioDocument } from '../usuarios/schemas/usuario.schema';
@@ -16,6 +21,15 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
+  private crearPayload(usuario: any) {
+    return {
+      sub: usuario._id?.toString() || usuario.id?.toString(),
+      mail: usuario.mail,
+      nombreUsuario: usuario.nombreUsuario,
+      perfil: usuario.perfil,
+    };
+  }
+
   async register(
     createUsuarioDto: CreateUsuarioDto,
     imagen: Express.Multer.File,
@@ -24,8 +38,7 @@ export class AuthService {
     const existeMail = await this.usuarioModel.findOne({
       mail: createUsuarioDto.mail,
     });
-    if (existeMail)
-      throw new ConflictException('El mail ya está registrado');
+    if (existeMail) throw new ConflictException('El mail ya está registrado');
     const existeUsuario = await this.usuarioModel.findOne({
       nombreUsuario: createUsuarioDto.nombreUsuario,
     });
@@ -36,9 +49,10 @@ export class AuthService {
     let imagenUrl = '';
     if (imagen) {
       const nombreArchivo = uuidv4() + path.extname(imagen.originalname);
-      const ruta = path.join(process.cwd(), 'uploads', nombreArchivo);
+      const uploadsPath = process.env.UPLOADS_PATH || 'uploads';
+      const ruta = path.join(process.cwd(), uploadsPath, nombreArchivo);
       fs.writeFileSync(ruta, imagen.buffer);
-      imagenUrl = `/uploads/${nombreArchivo}`;
+      imagenUrl = `/${uploadsPath}/${nombreArchivo}`;
     }
 
     // Encriptar contraseña
@@ -75,16 +89,17 @@ export class AuthService {
     }
 
     // Generar token
-    const payload = {
-      sub: usuario._id,
-      mail: usuario.mail,
-      nombreUsuario: usuario.nombreUsuario,
-      perfil: usuario.perfil,
-    };
+    const payload = this.crearPayload(usuario);
     const token = this.jwtService.sign(payload);
 
     // No devolver la contraseña
     const { password: _, ...usuarioSinPassword } = usuario.toObject();
-    return { usuario: usuarioSinPassword, token };
+    return { token, usuario: usuarioSinPassword };
+  }
+
+  // Autorizar usuario con token
+  generarToken(user) {
+    const payload = this.crearPayload(user);
+    return this.jwtService.sign(payload);
   }
 }

@@ -1,14 +1,19 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { Router } from '@angular/router';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private apiUrl = 'http://localhost:3000/auth'; // URL base del backend
+  private apiUrl = environment.apiUrl; // URL base del backend
+  private timeoutSesion: any;
+  private timeoutAdvertencia: any;
+  mostrarModalSesion = false;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
   //Registra un nuevo usuario enviando un FormData al backend.
   register(formData: FormData): Observable<any> {
@@ -42,5 +47,52 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    this.router.navigate(['/login']);
+  }
+
+  // Verifica si el usuario está autenticado comprobando la existencia del token.
+  autorizar() {
+    const token = localStorage.getItem('token');
+    return this.http.post(
+      '/auth/autorizar',
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+  }
+
+  // Refresca el token enviando una solicitud al backend.
+  refrescarToken() {
+    const token = this.getToken();
+    return this.http.post<{ token: string }>(
+      `${this.apiUrl}/refrescar`,
+      {},
+      { headers: { Authorization: `Bearer ${token}` } }
+    );
+  }
+
+  // Inicia un contador para la sesión del usuario, mostrando un modal de advertencia a los 10 minutos y cerrando la sesión a los 15 minutos.
+  iniciarContadorSesion() {
+    clearTimeout(this.timeoutSesion);
+    clearTimeout(this.timeoutAdvertencia);
+    this.timeoutAdvertencia = setTimeout(() => {
+      this.mostrarModalSesion = true;
+    }, 10 * 60 * 1000);
+    this.timeoutSesion = setTimeout(() => {
+      this.logout();
+    }, 15 * 60 * 1000);
+  }
+
+  // Cierra el modal de sesión y renueva el token.
+  renovarSesion() {
+    this.refrescarToken().subscribe({
+      next: (resp) => {
+        localStorage.setItem('token', resp.token);
+        this.iniciarContadorSesion();
+        this.mostrarModalSesion = false;
+      },
+      error: () => this.logout(),
+    });
   }
 }

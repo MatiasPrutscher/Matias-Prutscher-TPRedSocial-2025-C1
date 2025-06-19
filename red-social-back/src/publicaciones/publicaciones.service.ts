@@ -43,7 +43,6 @@ export class PublicacionesService {
     } else {
       query = query.sort({ createdAt: -1 });
     }
-
     return await query.exec();
   }
 

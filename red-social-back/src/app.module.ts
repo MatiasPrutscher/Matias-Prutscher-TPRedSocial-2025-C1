@@ -5,12 +5,16 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { UsuariosModule } from './usuarios/usuarios.module';
 import { AuthModule } from './auth/auth.module';
 import { PublicacionesModule } from './publicaciones/publicaciones.module';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      process.env.MONGO_URI || 'mongodb://localhost/red-social',
-    ),
+    ConfigModule.forRoot({ isGlobal: true }),
+    MongooseModule.forRootAsync({
+      useFactory: () => ({
+        uri: process.env.MONGO_URI,
+      }),
+    }),
     UsuariosModule,
     AuthModule,
     PublicacionesModule,
@@ -19,3 +23,4 @@ import { PublicacionesModule } from './publicaciones/publicaciones.module';
   providers: [AppService],
 })
 export class AppModule {}
+console.log('MONGO_URI:', process.env.MONGO_URI);
