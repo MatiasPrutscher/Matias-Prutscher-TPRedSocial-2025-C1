@@ -1,0 +1,60 @@
+<div class="page-bg container py-4">
+  @if (cargando) {
+  <app-loading-spinner></app-loading-spinner>
+  } @else if (publicacion) {
+  <div class="publicacion-detalle-wrapper">
+    <app-publicacion-card
+      [publicacion]="publicacion"
+      [usuarioActual]="authService.getUser()"
+      [detalle]="true"
+    />
+  </div>
+  <div class="comentarios-section">
+    <h4>Comentarios</h4>
+    <form (ngSubmit)="agregarComentario()" class="comentario-form">
+      <div class="comentario-form-row">
+        <img
+          class="publicacion-avatar"
+          [src]="
+            imagenUtil.getAvatarUrl(authService.getUser()) ||
+            'assets/default-avatar.png'
+          "
+          alt="avatar"
+        />
+        <textarea
+          [(ngModel)]="comentarioNuevo"
+          name="comentarioNuevo"
+          placeholder="Escribe un comentario..."
+          maxlength="300"
+          required
+          class="publicacion-input"
+          rows="2"
+        ></textarea>
+        <button type="submit" class="publicacion-btn">Comentar</button>
+      </div>
+    </form>
+    @for (com of comentarios; track com._id) {
+    <div class="comentario">
+      <b>{{ com.usuario?.nombreUsuario }} </b>
+      <span class="fecha">{{ com.createdAt | date : "short" }}</span>
+      <p>{{ com.texto }}</p>
+      @if (com.modificado) {
+      <span class="badge badge-warning">Editado</span>
+      }
+    </div>
+    } @if (!finComentarios) {
+    <button
+      (click)="cargarMasComentarios()"
+      class="btn btn-secondary"
+      [disabled]="cargandoComentarios"
+    >
+      Cargar más
+    </button>
+    } @if (cargandoComentarios) {
+    <app-loading-spinner></app-loading-spinner>
+    }
+  </div>
+  } @else if (errorMsg) {
+  <div class="alert alert-danger">{{ errorMsg }}</div>
+  }
+</div>

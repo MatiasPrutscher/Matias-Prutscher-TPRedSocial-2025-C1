@@ -1,19 +1,29 @@
-@if (authService.mostrarModalSesion) {
-<div class="modal-backdrop"></div>
+@if (visible) {
+<div class="modal-backdrop" (click)="onBackdropClick($event)"></div>
 <div class="modal">
   <div class="modal-content">
+    <button
+      class="btn-eliminar-publicacion-x modal-close"
+      (click)="cancelar.emit()"
+      title="Cerrar"
+      type="button"
+    >
+      ×
+    </button>
     <div class="modal-icon info">
-      <i class="fa fa-clock"></i>
+      <i class="fa" [ngClass]="icono"></i>
     </div>
-    <h4>Sesión por expirar</h4>
-    <p>Tu sesión está por expirar. ¿Deseas renovarla?</p>
+    <h4>{{ titulo }}</h4>
+    <p>{{ mensaje }}</p>
     <div class="modal-actions">
-      <button (click)="authService.renovarSesion()" class="btn btn-primary">
-        Renovar sesión
+      <button (click)="aceptar.emit()" class="btn btn-danger">
+        {{ textoAceptar }}
       </button>
-      <button (click)="authService.logout()" class="btn btn-secondary">
-        Cerrar sesión
+      @if (textoCancelar) {
+      <button (click)="cancelar.emit()" class="btn btn-secondary">
+        {{ textoCancelar }}
       </button>
+      }
     </div>
   </div>
 </div>

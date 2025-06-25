@@ -28,7 +28,7 @@
         <div class="publicacion-form-row gap-2">
           <img
             class="publicacion-avatar"
-            [src]="getAvatarUrl(authService.getUser())"
+            [src]="imagenUtil.getAvatarUrl(authService.getUser())"
             alt="avatar"
           />
           <input
@@ -86,93 +86,25 @@
     </div>
 
     <!-- LISTADO DE PUBLICACIONES -->
-    @if (publicaciones.length > 0) { @for (pub of publicaciones; track pub._id)
-    {
-    <div class="card perfil-feed-card mb-4">
-      <div class="perfil-feed-header">
-        <img
-          class="perfil-feed-avatar"
-          [src]="getAvatarUrl(pub.usuario)"
-          alt="Avatar"
-        />
-        <div>
-          <span class="perfil-feed-nombre">{{ pub.usuario?.nombre }}</span>
-          <span class="perfil-feed-fecha">{{
-            pub.createdAt | date : "dd/MM/yyyy"
-          }}</span>
-        </div>
-        @if ( pub.usuario?._id === authService.getUser()?._id ||
-        authService.getUser()?.perfil === 'administrador' ) {
-        <button
-          class="btn-eliminar-publicacion-x"
-          (click)="abrirModalConfirmar(pub._id)"
-          title="Eliminar publicación"
-        >
-          ×
-        </button>
-        }
+    <div class="publicaciones-scroll">
+      @if (cargando && publicaciones.length === 0) {
+      <app-loading-spinner></app-loading-spinner>
+      } @else { @if (publicaciones.length > 0) { @for (pub of publicaciones;
+      track pub._id) {
+
+      <app-publicacion-card
+        [publicacion]="pub"
+        [usuarioActual]="authService.getUser()"
+      />
+      } @if (cargando) {
+      <app-loading-spinner></app-loading-spinner>
+      } @if (fin && publicaciones.length > 0) {
+      <div class="text-center text-muted my-3">No hay más publicaciones.</div>
+      } } @else {
+      <div class="alert alert-info text-center mt-4">
+        <i class="fa fa-info-circle"></i> No hay publicaciones.
       </div>
-      <div class="perfil-feed-body">
-        <h4 class="perfil-feed-titulo">{{ pub.titulo }}</h4>
-        <p class="perfil-feed-mensaje">{{ pub.mensaje }}</p>
-        @if (pub.imagen) {
-        <img
-          [src]="getImagenUrl(pub.imagen)"
-          alt="Publicación"
-          class="perfil-feed-img"
-        />
-        }
-        <div class="perfil-feed-footer">
-          <span class="me-3">
-            <i
-              class="fa fa-heart"
-              [class.liked]="isLikedByCurrentUser(pub)"
-              [class.not-liked]="!isLikedByCurrentUser(pub)"
-              (click)="toggleLike(pub)"
-              style="cursor: pointer"
-              title="{{
-                isLikedByCurrentUser(pub) ? 'Quitar like' : 'Dar like'
-              }}"
-            ></i>
-            {{ pub.likes || 0 }}
-          </span>
-          <span>
-            <i class="fa fa-comment"></i> {{ pub.comentarios?.length || 0 }}
-          </span>
-        </div>
-        @if (pub.comentarios?.length) {
-        <div class="perfil-feed-comentarios">
-          @for (comentario of pub.comentarios; track comentario.usuario) {
-          <div class="perfil-feed-comentario">
-            <strong>{{ comentario.usuario }}: </strong>
-            <span>{{ comentario.texto }}</span>
-          </div>
-          }
-        </div>
-        }
-      </div>
-    </div>
-    } } @else {
-    <div class="alert alert-info text-center mt-4">
-      <i class="fa fa-info-circle"></i> No hay publicaciones.
-    </div>
-    }
-    <div>
-      <button
-        (click)="paginaAnterior()"
-        class="publicacion-btn-switch"
-        [disabled]="pagina === 0"
-        type="button"
-      >
-        Anterior
-      </button>
-      <button
-        (click)="paginaSiguiente()"
-        class="publicacion-btn-switch"
-        type="button"
-      >
-        Siguiente
-      </button>
+      } }
     </div>
   </div>
 </div>

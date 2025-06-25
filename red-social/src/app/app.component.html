@@ -1,3 +1,5 @@
 <app-navbar></app-navbar>
-<router-outlet></router-outlet>
-<app-sesion-modal></app-sesion-modal>
+@if (cargando) {
+<app-loading-spinner></app-loading-spinner> } @else { @if
+(authService.mostrarModalSesion) { <app-sesion-modal></app-sesion-modal> }
+<router-outlet></router-outlet> }

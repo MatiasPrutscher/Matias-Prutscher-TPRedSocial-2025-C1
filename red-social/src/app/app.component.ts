@@ -1,14 +1,48 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
+import { RouterOutlet, Router, NavigationEnd } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SesionModalComponent } from './shared/sesion-modal/sesion-modal.component';
+import { AuthService } from './services/auth/auth.service';
+import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, NavbarComponent, SesionModalComponent],
+  imports: [
+    RouterOutlet,
+    NavbarComponent,
+    SesionModalComponent,
+    LoadingSpinnerComponent,
+  ],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
 export class AppComponent {
-  title = 'red-social';
+  cargando = true;
+
+  constructor(public authService: AuthService, private router: Router) {
+    // Validar token al iniciar la app
+    this.authService.autorizar().subscribe({
+      next: () => {
+        this.cargando = false;
+        // Si ya está en login/register, redirigir a publicaciones
+        if (['/login', '/register', '/'].includes(this.router.url)) {
+          this.router.navigate(['/publicaciones']);
+        }
+      },
+      error: () => {
+        this.cargando = false;
+        // Si no está en login/register, redirigir a login
+        if (!['/login', '/register'].includes(this.router.url)) {
+          this.router.navigate(['/login']);
+        }
+      },
+    });
+
+    // Seguir reiniciando el contador en cada navegación
+    this.router.events.subscribe((event) => {
+      if (event instanceof NavigationEnd) {
+        this.authService.iniciarContadorSesion();
+      }
+    });
+  }
 }

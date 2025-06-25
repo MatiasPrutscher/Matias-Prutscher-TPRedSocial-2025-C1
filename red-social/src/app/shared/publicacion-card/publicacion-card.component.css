@@ -1,0 +1,210 @@
+/* --- Estilos para la Tarjeta de Publicación --- */
+.perfil-feed-card {
+  background: #1e1e1e;
+  border-radius: 1rem;
+  box-shadow: 0 4px 24px #0006;
+  border: 1px solid #2a2a2a;
+  padding: 1.2rem 1.5rem 1rem 1.5rem;
+  margin-bottom: 1.5rem;
+  text-align: left;
+  position: relative;
+  transition: box-shadow 0.2s, border-color 0.2s;
+}
+
+.perfil-feed-card:hover {
+  box-shadow: 0 8px 32px #0008;
+  border-color: #00bfff;
+}
+
+/* Detalle */
+.perfil-feed-card.detalle {
+  max-width: 700px;
+  margin: 2rem auto;
+  font-size: 1.15rem;
+  box-shadow: 0 8px 32px #00bfff33;
+}
+
+/* Cabecera */
+.perfil-feed-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 0.7rem;
+}
+
+.perfil-feed-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #00bfff;
+}
+
+.perfil-feed-nombre {
+  font-weight: 700;
+  color: #00bfff;
+  font-size: 1.1rem;
+}
+
+.perfil-feed-fecha {
+  color: #ccc;
+  font-size: 0.95rem;
+  margin-left: 0.5rem;
+}
+
+/* Cuerpo de la publicación */
+.perfil-feed-body {
+  margin-top: 0.5rem;
+}
+
+.perfil-feed-titulo {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #efefef;
+  margin-bottom: 0.3rem;
+}
+
+.perfil-feed-mensaje {
+  color: #ccc;
+  margin-bottom: 0.5rem;
+}
+
+.perfil-feed-img {
+  width: 100%;
+  max-height: 320px;
+  object-fit: cover;
+  border-radius: 0.7rem;
+  margin: 0.5rem 0 0.7rem 0;
+  box-shadow: 0 2px 8px #0002;
+}
+
+/* Detalle */
+.perfil-feed-img.img-detalle {
+  max-height: 420px;
+  width: 100%;
+  object-fit: contain;
+}
+
+/* Pie de la publicación (likes, comentarios) */
+.perfil-feed-footer {
+  border-top: 1px solid #2a2a2a;
+  margin-top: 0.7rem;
+  padding-top: 0.5rem;
+  color: #00bfff;
+  font-size: 1.1rem;
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+}
+
+.perfil-feed-footer i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+  cursor: pointer;
+  transition: color 0.2s;
+  margin-right: 0.3rem;
+}
+
+.perfil-feed-footer i.fa-heart:hover {
+  color: #ff7b7b;
+}
+
+.perfil-feed-footer i.fa-comment {
+  color: #00bfff;
+}
+.perfil-feed-footer i.fa-comment:hover {
+  color: #8a2be2;
+}
+
+.fa-heart.liked {
+  color: #ff4d4d;
+}
+
+.fa-heart.not-liked {
+  color: #b0b8c1;
+}
+
+/* Sección de comentarios */
+.perfil-feed-comentarios {
+  margin-top: 0.7rem;
+  background: #121212;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1rem;
+}
+
+.perfil-feed-comentario {
+  color: #efefef;
+  font-size: 1rem;
+  margin-bottom: 0.3rem;
+}
+
+/* Botón de eliminar (X) */
+.btn-eliminar-publicacion-x {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.7rem;
+  background: none;
+  border: none;
+  color: #e57373;
+  font-size: 1.5rem;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 2;
+  transition: color 0.2s, background 0.2s;
+  padding: 0;
+  line-height: 1;
+  width: 2rem;
+  height: 2rem;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-eliminar-publicacion-x:hover {
+  color: #fff;
+  background: #b71c1c;
+}
+
+/* Responsive */
+@media (max-width: 700px) {
+  .perfil-feed-img {
+    max-width: 100%;
+  }
+}
+/* --- Estilos de Modales --- */
+.modal-backdrop {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(18, 18, 18, 0.7);
+  z-index: 9999;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: #1e1e1e;
+  color: #efefef;
+  border-radius: 1.2rem;
+  border: 1px solid #2a2a2a;
+  box-shadow: 0 8px 32px #000a;
+  z-index: 10000;
+  min-width: 340px;
+}
+
+.modal-icon.info {
+  color: #00bfff;
+}
+
+.btn.btn-secondary {
+  background: #8a2be2;
+  color: #ffffff;
+}
+.btn.btn-secondary:hover {
+  background: #7022b8;
+}

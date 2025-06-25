@@ -1,0 +1,31 @@
+<!-- SVG Generado con Gemini -->
+        <svg class="pulsus-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+            <!-- 
+              Definimos el degradado de color que usaremos en las ondas.
+              Va de un cian (#00BFFF) a un violeta (#8A2BE2).
+            -->
+            <defs>
+                <linearGradient id="pulseGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#00BFFF; stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#8A2BE2; stop-opacity:1" />
+                </linearGradient>
+            </defs>
+
+            <!-- 
+              Dibujamos los círculos que forman las ondas del pulso.
+              - 'cx' y 'cy' los centran en el lienzo.
+              - 'r' es el radio (tamaño).
+              - 'fill="none"' hace que el interior sea transparente.
+              - 'stroke="url(#pulseGradient)"' aplica nuestro degradado al borde.
+              - 'stroke-width' es el grosor del borde.
+            -->
+            <circle cx="50" cy="50" r="25" fill="none" stroke="url(#pulseGradient)" stroke-width="2"/>
+            <circle cx="50" cy="50" r="35" fill="none" stroke="url(#pulseGradient)" stroke-width="2" stroke-opacity="0.7"/>
+            <circle cx="50" cy="50" r="45" fill="none" stroke="url(#pulseGradient)" stroke-width="2" stroke-opacity="0.4"/>
+
+            <!-- 
+              Este es el punto central del pulso.
+              Es un círculo sólido relleno con el color celeste inicial del degradado.
+            -->
+            <circle cx="50" cy="50" r="8" fill="#00BFFF"/>
+        </svg>

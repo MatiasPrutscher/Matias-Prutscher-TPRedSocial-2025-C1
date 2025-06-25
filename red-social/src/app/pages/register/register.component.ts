@@ -9,10 +9,11 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth/auth.service';
+import { SesionModalComponent } from '../../shared/sesion-modal/sesion-modal.component';
 
 @Component({
   selector: 'app-register',
-  imports: [FormsModule, ReactiveFormsModule, NgClass],
+  imports: [FormsModule, ReactiveFormsModule, NgClass, SesionModalComponent],
   templateUrl: './register.component.html',
   styleUrls: ['./register.component.css'],
 })
@@ -24,6 +25,10 @@ export class RegisterComponent {
   passwordStrength: 'Débil' | 'Media' | 'Fuerte' | '' = '';
   imageError: string = '';
   isSubmitting = false;
+  modalError = {
+    visible: false,
+    mensaje: '',
+  };
 
   constructor(
     private formBuilder: FormBuilder,
@@ -87,11 +92,13 @@ export class RegisterComponent {
       this.authService.register(formData).subscribe({
         next: (usuario) => {
           this.authService.saveUser(usuario);
-          console.log('Usuario registrado:', usuario);
+          this.authService.iniciarContadorSesion();
           this.router.navigate(['/publicaciones']);
         },
         error: (err) => {
-          alert('Error en el registro: ' + (err.error?.message || ''));
+          this.modalError.visible = true;
+          this.modalError.mensaje =
+            'Error en el registro: ' + (err.error?.message || '');
           this.isSubmitting = false;
         },
       });
@@ -99,6 +106,11 @@ export class RegisterComponent {
       this.isSubmitting = false;
       this.registerForm.markAllAsTouched();
     }
+  }
+
+  cerrarModalError() {
+    this.modalError.visible = false;
+    this.modalError.mensaje = '';
   }
 
   onFileChange(event: any) {

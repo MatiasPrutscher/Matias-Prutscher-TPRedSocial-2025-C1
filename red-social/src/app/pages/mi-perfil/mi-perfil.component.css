@@ -1,50 +1,56 @@
-/* Portada y avatar solo para perfil */
+/* --- Contenedor Principal --- */
+.perfil-main {
+  background: #1e1e1e;
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.6);
+  border: 1px solid #2a2a2a;
+  border-radius: 1rem;
+  padding: 2.5rem 2rem 2rem 2rem;
+  text-align: center;
+}
+
+/* --- Portada y Avatar --- */
 .perfil-portada {
-  background: linear-gradient(135deg, #23272f 60%, #2b3a55 100%);
   height: 220px;
   position: relative;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-  overflow: visible;
-  padding-bottom: 75px;
+  margin-bottom: 60px; /* Espacio para que el avatar no se superponga con el contenido */
 }
+
 .portada-img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  filter: brightness(0.7);
+  filter: brightness(0.6);
   position: absolute;
   top: 0;
   left: 0;
   z-index: 1;
+  border-radius: 1rem 1rem 0 0;
 }
+
 .perfil-avatar-wrapper {
   position: absolute;
   left: 50%;
-  bottom: -60px;
+  bottom: -60px; /* Posiciona el avatar fuera de la portada */
   transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
   z-index: 2;
 }
+
 .perfil-avatar {
   width: 120px;
   height: 120px;
   border-radius: 50%;
-  border: 5px solid #23272f;
+  border: 5px solid #1e1e1e; /* Color del fondo de la tarjeta */
   box-shadow: 0 4px 24px #0008;
-  background: #23272f;
+  background: #1e1e1e;
   object-fit: cover;
-  position: relative;
 }
+
 .perfil-edit-btn {
   position: absolute;
   right: -10px;
   bottom: 10px;
-  background: linear-gradient(90deg, #90caf9 60%, #64b5f6 100%);
-  color: #181a20;
+  background: linear-gradient(90deg, #00bfff, #8a2be2);
+  color: #ffffff;
   border: none;
   border-radius: 50%;
   width: 42px;
@@ -55,23 +61,22 @@
   font-size: 1.3rem;
   box-shadow: 0 4px 16px #0002;
   cursor: pointer;
-  transition: background 0.2s, box-shadow 0.2s, color 0.2s;
+  transition: all 0.2s;
   z-index: 3;
 }
 .perfil-edit-btn:hover {
-  background: linear-gradient(90deg, #64b5f6 60%, #90caf9 100%);
-  color: #23272f;
-  box-shadow: 0 8px 24px #0003;
+  box-shadow: 0 8px 24px #00bfff44;
 }
 
-/* Info principal del perfil */
+/* --- Información del Perfil --- */
 .perfil-info {
-  margin-top: 80px;
+  margin-top: 2rem;
   text-align: center;
+  margin-bottom: 2rem;
 }
+
 .perfil-nombre {
   font-size: 2rem;
-  color: #e3eaf2;
   font-weight: 700;
   margin-bottom: 0.2rem;
   display: flex;
@@ -79,17 +84,39 @@
   justify-content: center;
   gap: 0.5rem;
 }
+
 .perfil-badge {
   color: #00e676;
   font-size: 1.3rem;
 }
+
 .perfil-meta {
-  color: #90caf9;
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
+  color: #00bfff;
 }
 .perfil-descripcion {
-  color: #b0b8c1;
-  font-size: 1.1rem;
-  margin-top: 0.5rem;
+  color: #ccc;
+}
+
+/* --- Chips de Información --- */
+.perfil-chips {
+  display: flex;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+.perfil-chip {
+  background: #2a203a;
+  color: #efefef;
+  border: 1px solid #8a2be2;
+  border-radius: 2rem;
+  padding: 0.5rem 1.2rem;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+.perfil-chip i {
+  color: #00bfff;
 }

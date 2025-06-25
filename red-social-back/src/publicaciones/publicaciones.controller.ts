@@ -10,6 +10,7 @@ import {
   Query,
   Param,
   Delete,
+  NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PublicacionesService } from './publicaciones.service';
@@ -75,5 +76,12 @@ export class PublicacionesController {
       req.user.userId,
       req.user.perfil,
     );
+  }
+
+  @Get(':id')
+  async getPublicacion(@Param('id') id: string) {
+    const pub = await this.publicacionesService.getPorId(id);
+    if (!pub) throw new NotFoundException('Publicación no encontrada');
+    return pub;
   }
 }

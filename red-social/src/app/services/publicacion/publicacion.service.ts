@@ -1,12 +1,13 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
 })
 export class PublicacionService {
-  private apiUrl = 'http://localhost:3000/publicaciones';
+  private apiUrl = environment.apiUrl + '/publicaciones';
 
   getPublicaciones(params: any = {}): Observable<any[]> {
     return this.http.get<any[]>(this.apiUrl, { params });
@@ -34,6 +35,10 @@ export class PublicacionService {
     const token = localStorage.getItem('token');
     const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
     return this.http.delete(`${this.apiUrl}/${id}`, { headers });
+  }
+
+  getPublicacion(id: string) {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
   }
 
   constructor(private http: HttpClient) {}

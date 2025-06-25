@@ -1,7 +1,8 @@
 <nav>
   <div class="navbar-content">
-    <div class="navbar-logo">
-      <span routerLink="/publicaciones">🌐</span>
+    <div class="navbar-logo" routerLink="/publicaciones">
+      <img src="assets/favicon.svg" alt="Pulsus Logo" class="navbar-logo-img" />
+      Pulsus
     </div>
     <ul [class.navbar-mobile-open]="menuAbierto" class="navbar-links">
       @if (authService.getUser()) {

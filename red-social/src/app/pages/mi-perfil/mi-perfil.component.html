@@ -7,7 +7,12 @@
       alt="Portada"
     />
     <div class="perfil-avatar-wrapper">
-      <img class="perfil-avatar" [src]="usuario.avatarUrl" alt="Avatar" />
+      <img
+        class="perfil-avatar"
+        [src]="imagenUtil.getAvatarUrl(usuario)"
+        alt="Avatar"
+        (click)="test(imagenUtil.getAvatarUrl(usuario))"
+      />
       <button
         class="perfil-edit-btn"
         (click)="editarPerfil()"
@@ -19,28 +24,31 @@
   </div>
   <div class="perfil-info">
     <h2 class="perfil-nombre">
-      {{ usuario.nombre }}
-      @if (usuario.verificado) {
+      {{ usuario?.nombre }}
+      @if (usuario?.verificado) {
       <span class="perfil-badge" title="Verificado"
         ><i class="fa fa-check-circle"></i
       ></span>
       }
     </h2>
     <div class="perfil-meta">
-      {{ usuario.seguidores | number }} seguidores
-      {{ usuario.siguiendo | number }} siguiendo
+      {{ usuario?.seguidores | number }} seguidores
+      {{ usuario?.siguiendo | number }} siguiendo
     </div>
     <div class="perfil-descripcion">
-      {{ usuario.descripcion }}
+      {{ usuario?.descripcion }}
     </div>
   </div>
   <div class="perfil-main">
+    @if (cargando) {
+    <app-loading-spinner></app-loading-spinner> }
     <div class="perfil-chips">
       <span class="perfil-chip">
-        <i class="fa fa-envelope"></i> {{ usuario.email }}
+        <i class="fa fa-envelope"></i> {{ usuario?.mail }}
       </span>
       <span class="perfil-chip">
-        <i class="fa fa-birthday-cake"></i> {{ usuario.fechaNacimiento }}
+        <i class="fa fa-birthday-cake"></i>
+        {{ usuario?.fechaNacimiento | date : "shortDate" }}
       </span>
     </div>
     <div class="perfil-publicaciones">
@@ -48,44 +56,10 @@
         <i class="fa fa-bullhorn"></i> Mis últimas publicaciones
       </h3>
       @for (pub of publicaciones; track pub.titulo) {
-      <div class="card perfil-feed-card mb-4">
-        <div class="perfil-feed-header">
-          <img
-            class="perfil-feed-avatar"
-            [src]="usuario.avatarUrl"
-            alt="Avatar"
-          />
-          <div>
-            <span class="perfil-feed-nombre">{{ usuario.nombre }}</span>
-            <span class="perfil-feed-fecha">{{ pub.fecha }}</span>
-          </div>
-        </div>
-        <div class="perfil-feed-body">
-          <h4 class="perfil-feed-titulo">{{ pub.titulo }}</h4>
-          <p class="perfil-feed-mensaje">{{ pub.mensaje }}</p>
-          @if (pub.imagen) {
-          <img [src]="pub.imagen" alt="Publicación" class="perfil-feed-img" />
-          }
-          <div class="perfil-feed-footer">
-            <span class="me-3">
-              <i class="fa fa-heart"></i> {{ pub.likes || 0 }}
-            </span>
-            <span>
-              <i class="fa fa-comment"></i> {{ pub.comentarios?.length || 0 }}
-            </span>
-          </div>
-          @if (pub.comentarios?.length) {
-          <div class="perfil-feed-comentarios">
-            @for (comentario of pub.comentarios; track comentario.usuario) {
-            <div class="perfil-feed-comentario">
-              <strong>{{ comentario.usuario }}: </strong>
-              <span>{{ comentario.texto }}</span>
-            </div>
-            }
-          </div>
-          }
-        </div>
-      </div>
+      <app-publicacion-card
+        [publicacion]="pub"
+        [usuarioActual]="authService.getUser()"
+      />
       } @empty {
       <div class="alert alert-info text-center mt-4">
         <i class="fa fa-info-circle"></i> No hay publicaciones.
@@ -93,4 +67,14 @@
       }
     </div>
   </div>
+  <app-sesion-modal
+    [visible]="modalInfo.visible"
+    titulo="Información"
+    [mensaje]="modalInfo.mensaje"
+    textoAceptar="Cerrar"
+    [textoCancelar]="''"
+    icono="fa-info-circle"
+    (aceptar)="cerrarModalInfo()"
+    (cancelar)="cerrarModalInfo()"
+  ></app-sesion-modal>
 </div>

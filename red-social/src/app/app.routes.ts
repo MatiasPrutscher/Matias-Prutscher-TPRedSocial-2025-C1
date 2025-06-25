@@ -34,5 +34,13 @@ export const routes: Routes = [
       ),
     canActivate: [AuthGuard], // Solo usuarios logueados
   },
+  {
+    path: 'publicacion/:id',
+    loadComponent: () =>
+      import('./pages/publicacion/publicacion.component').then(
+        (m) => m.PublicacionComponent
+      ),
+    canActivate: [AuthGuard], // Solo usuarios logueados
+  },
   { path: '**', redirectTo: 'login' },
 ];

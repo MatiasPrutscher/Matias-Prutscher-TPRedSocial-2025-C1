@@ -1,21 +1,32 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { PublicacionService } from '../../services/publicacion/publicacion.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { environment } from '../../../environments/environment';
+import { PublicacionCardComponent } from '../../shared/publicacion-card/publicacion-card.component';
+import { ImagenUtilService } from '../../services/imagen-util/imagen-util.service';
+import { LoadingSpinnerComponent } from '../../shared/loading-spinner/loading-spinner.component';
+import { PublicacionComponent } from '../publicacion/publicacion.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-publicaciones',
-  imports: [CommonModule, FormsModule],
+  imports: [
+    CommonModule,
+    FormsModule,
+    PublicacionCardComponent,
+    LoadingSpinnerComponent,
+  ],
   templateUrl: './publicaciones.component.html',
   styleUrls: ['./publicaciones.component.css'],
 })
 export class PublicacionesComponent implements OnInit {
+  cargando = false;
   publicaciones: any[] = [];
   orden: 'fecha' | 'likes' = 'fecha';
   pagina = 0;
-  limite = 10;
+  limite = 5;
+  fin = false;
   nuevaPublicacion = { titulo: '', mensaje: '', imagen: null as File | null };
   isSubmitting = false;
   errorMsg = '';
@@ -33,53 +44,47 @@ export class PublicacionesComponent implements OnInit {
 
   constructor(
     private publicacionService: PublicacionService,
-    public authService: AuthService
+    public authService: AuthService,
+    public imagenUtil: ImagenUtilService
   ) {}
 
   ngOnInit() {
     this.cargarPublicaciones();
   }
 
-  cargarPublicaciones() {
+  cargarPublicaciones(append = false) {
+    if (this.cargando || this.fin) return;
+    this.cargando = true;
     this.publicacionService
       .getPublicaciones({
         orden: this.orden,
         offset: this.pagina * this.limite,
         limit: this.limite,
       })
-      .subscribe((pubs) => (this.publicaciones = pubs));
+      .subscribe({
+        next: (pubs) => {
+          console.log('Primer publicación:', pubs[0]);
+          if (append) {
+            this.publicaciones = [...this.publicaciones, ...pubs];
+          } else {
+            this.publicaciones = pubs;
+          }
+          if (pubs.length < this.limite) {
+            this.fin = true;
+          }
+          this.cargando = false;
+        },
+        error: () => {
+          this.cargando = false;
+        },
+      });
   }
 
   cambiarOrden(nuevoOrden: 'fecha' | 'likes') {
     this.orden = nuevoOrden;
     this.pagina = 0;
+    this.fin = false;
     this.cargarPublicaciones();
-  }
-
-  paginaSiguiente() {
-    this.pagina++;
-    this.cargarPublicaciones();
-  }
-
-  paginaAnterior() {
-    if (this.pagina > 0) this.pagina--;
-    this.cargarPublicaciones();
-  }
-
-  toggleLike(pub: any) {
-    const user = this.authService.getUser();
-    const userId = user?._id || user?.userId;
-    if (!userId) return;
-    const likeList = (pub.usuariosLike || []).map((id: any) => id.toString());
-    if (likeList.includes(userId.toString())) {
-      this.publicacionService
-        .quitarLike(pub._id)
-        .subscribe(() => this.cargarPublicaciones());
-    } else {
-      this.publicacionService
-        .darLike(pub._id)
-        .subscribe(() => this.cargarPublicaciones());
-    }
   }
 
   onFileChange(event: any) {
@@ -119,20 +124,6 @@ export class PublicacionesComponent implements OnInit {
     });
   }
 
-  getImagenUrl(imagen: string) {
-    if (!imagen) return 'assets/avatar-default.png';
-    if (imagen.startsWith('http')) return imagen;
-    return environment.assetsUrl + imagen;
-  }
-
-  getAvatarUrl(usuario: any) {
-    if (usuario?.imagen) {
-      if (usuario.imagen.startsWith('http')) return usuario.imagen;
-      return environment.assetsUrl + usuario.imagen;
-    }
-    return 'assets/avatar-default.png';
-  }
-
   trackById(index: number, item: any) {
     return item._id;
   }
@@ -162,12 +153,18 @@ export class PublicacionesComponent implements OnInit {
     this.modalError.mensaje = '';
   }
 
-  isLikedByCurrentUser(pub: any): boolean {
-    const user = this.authService.getUser();
-    const userId = user?._id || user?.userId;
-    if (!userId) return false;
-    return (pub.usuariosLike || [])
-      .map((id: any) => id.toString())
-      .includes(userId.toString());
+  eliminarPublicacionLocal(id: string) {
+    this.publicaciones = this.publicaciones.filter((pub) => pub._id !== id);
+  }
+
+  @HostListener('window:scroll', [])
+  onWindowScroll() {
+    if (this.cargando || this.fin) return;
+    const scrollPosition = window.innerHeight + window.scrollY;
+    const threshold = document.body.offsetHeight - 100;
+    if (scrollPosition >= threshold) {
+      this.pagina++;
+      this.cargarPublicaciones(true);
+    }
   }
 }

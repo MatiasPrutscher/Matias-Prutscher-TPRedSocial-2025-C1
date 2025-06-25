@@ -9,11 +9,12 @@ import {
 import { NgClass } from '@angular/common';
 import { AuthService } from '../../services/auth/auth.service';
 import { Router } from '@angular/router';
+import { SesionModalComponent } from '../../shared/sesion-modal/sesion-modal.component';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, ReactiveFormsModule, NgClass],
+  imports: [FormsModule, ReactiveFormsModule, NgClass, SesionModalComponent],
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css'],
 })
@@ -21,6 +22,11 @@ export class LoginComponent {
   loginForm: FormGroup;
   passwordVisible = false;
   isSubmitting = false;
+
+  modalError = {
+    visible: false,
+    mensaje: '',
+  };
 
   quickUsers = [
     {
@@ -78,11 +84,13 @@ export class LoginComponent {
       this.authService.login(userOrEmail, password).subscribe({
         next: (usuario) => {
           this.authService.saveUser(usuario);
-          console.log('Usuario logueado:', usuario);
+          this.authService.iniciarContadorSesion();
           this.router.navigate(['/publicaciones']);
         },
         error: (err) => {
-          alert('Error en el login: ' + (err.error?.message || ''));
+          this.modalError.visible = true;
+          this.modalError.mensaje =
+            'Error en el login: ' + (err.error?.message || '');
           this.isSubmitting = false;
         },
       });
@@ -90,6 +98,11 @@ export class LoginComponent {
       this.isSubmitting = false;
       this.loginForm.markAllAsTouched();
     }
+  }
+
+  cerrarModalError() {
+    this.modalError.visible = false;
+    this.modalError.mensaje = '';
   }
 
   quickLogin(userOrEmail: string, password: string) {

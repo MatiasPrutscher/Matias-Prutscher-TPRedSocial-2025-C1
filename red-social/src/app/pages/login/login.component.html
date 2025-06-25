@@ -66,3 +66,13 @@
     </div>
   </form>
 </div>
+<app-sesion-modal
+  [visible]="modalError.visible"
+  titulo="Error"
+  [mensaje]="modalError.mensaje"
+  textoAceptar="Cerrar"
+  [textoCancelar]="''"
+  icono="fa-exclamation-circle"
+  (aceptar)="cerrarModalError()"
+  (cancelar)="cerrarModalError()"
+></app-sesion-modal>

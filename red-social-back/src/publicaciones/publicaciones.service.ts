@@ -7,12 +7,18 @@ import { InjectModel } from '@nestjs/mongoose';
 import { Model, Types } from 'mongoose';
 import { Publicacion, PublicacionDocument } from './schemas/publicacion.schema';
 import { CreatePublicacionDto } from './dto/create-publicacion.dto';
+import {
+  Comentario,
+  ComentarioDocument,
+} from '../comentarios/schemas/comentario.schema';
 
 @Injectable()
 export class PublicacionesService {
   constructor(
     @InjectModel(Publicacion.name)
     private publicacionModel: Model<PublicacionDocument>,
+    @InjectModel(Comentario.name)
+    private comentarioModel: Model<ComentarioDocument>,
   ) {}
 
   async crear(
@@ -43,7 +49,23 @@ export class PublicacionesService {
     } else {
       query = query.sort({ createdAt: -1 });
     }
-    return await query.exec();
+    const publicaciones = await query.exec();
+
+    const publicacionesConComentarios = await Promise.all(
+      publicaciones.map(async (pub) => {
+        const comentarios = await this.comentarioModel.find({
+          publicacion: pub._id,
+          activo: true,
+        });
+        const comentariosCount = comentarios.length;
+        return {
+          ...pub.toObject(),
+          comentariosCount,
+        };
+      }),
+    );
+
+    return publicacionesConComentarios;
   }
 
   async darLike(id: string, userId: string) {
@@ -80,5 +102,24 @@ export class PublicacionesService {
     publicacion.activo = false;
     await publicacion.save();
     return { message: 'Publicación dada de baja' };
+  }
+
+  async getPorId(id: string) {
+    const pub = await this.publicacionModel
+      .findOne({ _id: id, activo: true })
+      .populate('usuario', 'nombre nombreUsuario imagen')
+      .exec();
+    if (!pub) return null;
+
+    // Contar comentarios activos de esta publicación
+    const comentariosCount = await this.comentarioModel.countDocuments({
+      publicacion: pub._id,
+      activo: true,
+    });
+
+    return {
+      ...pub.toObject(),
+      comentariosCount,
+    };
   }
 }

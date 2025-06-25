@@ -4,12 +4,19 @@ export interface Comentario {
 }
 
 export interface Publicacion {
+  _id: string;
   titulo: string;
   mensaje: string;
   imagen?: string;
-  fecha: string;
-  likes?: number;
+  usuario: any;
+  likes: number;
+  usuariosLike: string[];
+  activo: boolean;
+  createdAt: string;
+  updatedAt: string;
+  comentariosCount?: number;
   comentarios?: Comentario[];
+  __v?: number;
 }
 
 export interface UsuarioPerfil {
@@ -19,7 +26,6 @@ export interface UsuarioPerfil {
   seguidores: number;
   siguiendo: number;
   descripcion: string;
-  email: string;
+  mail: string;
   fechaNacimiento: string;
-  publicaciones: Publicacion[];
 }

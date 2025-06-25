@@ -1,0 +1,80 @@
+<div class="card perfil-feed-card mb-4" (dblclick)="toggleLike()">
+  <div class="perfil-feed-header">
+    <img
+      class="perfil-feed-avatar"
+      [src]="getAvatarUrl(publicacion.usuario)"
+      alt="Avatar"
+    />
+    <div>
+      <span class="perfil-feed-nombre">{{ publicacion.usuario?.nombre }}</span>
+      <span class="perfil-feed-fecha">{{
+        publicacion.createdAt | date : "dd/MM/yyyy"
+      }}</span>
+    </div>
+    @if (puedeEliminar()) {
+    <button
+      class="btn-eliminar-publicacion-x"
+      (click)="eliminarPublicacion()"
+      title="Eliminar publicación"
+    >
+      ×
+    </button>
+    }
+  </div>
+  <div class="perfil-feed-body">
+    <h4 class="perfil-feed-titulo">{{ publicacion.titulo }}</h4>
+    <p class="perfil-feed-mensaje">{{ publicacion.mensaje }}</p>
+    @if (publicacion.imagen) {
+    <img
+      *ngIf="publicacion.imagen"
+      [src]="getImagenUrl(publicacion.imagen)"
+      alt="Publicación"
+      class="perfil-feed-img"
+    />
+    }
+    <div class="perfil-feed-footer">
+      <span class="me-3">
+        <i
+          class="fa fa-heart"
+          [class.liked]="isLikedByCurrentUser()"
+          [class.not-liked]="!isLikedByCurrentUser()"
+          (click)="toggleLike()"
+          style="cursor: pointer"
+          title="{{ isLikedByCurrentUser() ? 'Quitar like' : 'Dar like' }}"
+        ></i>
+        {{ publicacion.likes || 0 }}
+      </span>
+      <span>
+        <i
+          class="fa fa-comment"
+          (click)="abrirComentarios()"
+          style="cursor: pointer"
+          title="Ver comentarios"
+        ></i>
+        {{ publicacion.comentariosCount || 0 }}
+      </span>
+    </div>
+    @if (publicacion.comentariosCount > 0) {
+    <div class="perfil-feed-comentarios">
+      @for (comentario of publicacion.comentarios; track comentario.usuario) {
+      <div class="perfil-feed-comentario">
+        <strong>{{ comentario.usuario }}: </strong>
+        <span>{{ comentario.texto }}</span>
+      </div>
+      }
+    </div>
+    }
+  </div>
+</div>
+
+<!-- Modal de confirmación -->
+<app-sesion-modal
+  [visible]="mostrarModalConfirmar"
+  titulo="Confirmar eliminación"
+  mensaje="¿Seguro que deseas eliminar esta publicación?"
+  textoAceptar="Sí, eliminar"
+  textoCancelar="Cancelar"
+  icono="fa-question-circle"
+  (aceptar)="confirmarEliminar()"
+  (cancelar)="cancelarEliminar()"
+></app-sesion-modal>
