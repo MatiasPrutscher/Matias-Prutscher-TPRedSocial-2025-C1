@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { UsuarioPerfil, Publicacion } from '../../interfaces/red-social-model';
 import { UsuarioService } from '../../services/usuario/usuario.service';
 import { PublicacionService } from '../../services/publicacion/publicacion.service';
@@ -34,7 +34,8 @@ export class MiPerfilComponent implements OnInit {
     private usuarioService: UsuarioService,
     private publicacionService: PublicacionService,
     public authService: AuthService,
-    public imagenUtil: ImagenUtilService
+    public imagenUtil: ImagenUtilService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -74,6 +75,7 @@ export class MiPerfilComponent implements OnInit {
 
   eliminarPublicacionLocal(id: string) {
     this.publicaciones = this.publicaciones.filter((pub) => pub._id !== id);
+    this.cdr.detectChanges();
   }
 
   editarPerfil() {

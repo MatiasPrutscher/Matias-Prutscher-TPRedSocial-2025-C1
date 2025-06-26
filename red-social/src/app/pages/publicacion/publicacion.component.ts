@@ -71,6 +71,7 @@ export class PublicacionComponent implements OnInit {
       .getComentarios(id, this.pagina * this.limite, this.limite)
       .subscribe({
         next: (coms) => {
+          console.log('Comentarios recibidos:', coms);
           if (append) {
             this.comentarios = [...this.comentarios, ...coms];
           } else {
@@ -78,10 +79,12 @@ export class PublicacionComponent implements OnInit {
           }
           if (coms.length < this.limite) this.finComentarios = true;
           this.cargandoComentarios = false;
+          console.log('Array comentarios en componente:', this.comentarios);
         },
-        error: () => {
+        error: (err) => {
           this.errorMsg = 'No se pudieron cargar los comentarios';
           this.cargandoComentarios = false;
+          console.error('Error al cargar comentarios:', err);
         },
       });
   }

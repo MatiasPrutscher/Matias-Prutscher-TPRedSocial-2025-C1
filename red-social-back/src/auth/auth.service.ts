@@ -79,7 +79,12 @@ export class AuthService {
       $or: [{ mail: mailOrUser }, { nombreUsuario: mailOrUser }],
     });
     if (!usuario) {
-      throw new NotFoundException('Usuario no encontrado');
+      throw new UnauthorizedException('Usuario o contraseña incorrectos');
+    }
+    if (!usuario.activo) {
+      throw new UnauthorizedException(
+        'Usuario deshabilitado. Contacte al administrador.',
+      );
     }
 
     // Comparar contraseñas

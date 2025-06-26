@@ -1,0 +1,149 @@
+<div class="page-bg container py-4">
+  <div class="dashboard-usuarios-card">
+    <h2 class="dashboard-title">
+      <i class="fa fa-users-cog"></i> Administración de Usuarios
+    </h2>
+
+    @if (cargando) {
+    <app-loading-spinner></app-loading-spinner>
+    } @else {
+    <div class="usuarios-table-wrapper">
+      <table class="usuarios-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Mail</th>
+            <th>Usuario</th>
+            <th>Perfil</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (u of usuarios; track u._id) {
+          <tr [class.inactivo]="!u.activo">
+            <td>
+              <span class="user-avatar">
+                <img [src]="imagenUtil.getAvatarUrl(u)" alt="avatar" />
+              </span>
+              {{ u.nombre }} {{ u.apellido }}
+            </td>
+            <td>{{ u.mail }}</td>
+            <td>{{ u.nombreUsuario }}</td>
+            <td>
+              <span [class.admin]="u.perfil === 'administrador'">
+                {{ u.perfil | titlecase }}
+              </span>
+            </td>
+            <td>
+              <span
+                [class.estado-activo]="u.activo"
+                [class.estado-inactivo]="!u.activo"
+              >
+                {{ u.activo ? "Activo" : "Inactivo" }}
+              </span>
+            </td>
+            <td>
+              @if (u.activo) {
+              <button
+                class="btn btn-danger"
+                (click)="abrirModalConfirmar(u._id, 'baja')"
+              >
+                <i class="fa fa-user-slash"></i> Deshabilitar
+              </button>
+              } @else {
+              <button
+                class="btn btn-primary"
+                (click)="abrirModalConfirmar(u._id, 'alta')"
+              >
+                <i class="fa fa-user-check"></i> Habilitar
+              </button>
+              }
+            </td>
+          </tr>
+          }
+        </tbody>
+      </table>
+    </div>
+    }
+
+    <h3 class="dashboard-subtitle mt-4">
+      <i class="fa fa-user-plus"></i> Crear nuevo usuario
+    </h3>
+    <form class="nuevo-usuario-form" (ngSubmit)="crearUsuario()">
+      <input
+        [(ngModel)]="nuevoUsuario.nombre"
+        name="nombre"
+        placeholder="Nombre"
+        required
+      />
+      <input
+        [(ngModel)]="nuevoUsuario.apellido"
+        name="apellido"
+        placeholder="Apellido"
+        required
+      />
+      <input
+        [(ngModel)]="nuevoUsuario.mail"
+        name="mail"
+        placeholder="Mail"
+        required
+      />
+      <input
+        [(ngModel)]="nuevoUsuario.nombreUsuario"
+        name="nombreUsuario"
+        placeholder="Usuario"
+        required
+      />
+      <input
+        [(ngModel)]="nuevoUsuario.password"
+        name="password"
+        placeholder="Contraseña"
+        type="password"
+        required
+      />
+      <input
+        [(ngModel)]="nuevoUsuario.repetirPassword"
+        name="repetirPassword"
+        placeholder="Repetir Contraseña"
+        type="password"
+        required
+      />
+      <select [(ngModel)]="nuevoUsuario.perfil" name="perfil">
+        <option value="usuario">Usuario</option>
+        <option value="administrador">Administrador</option>
+      </select>
+      <button type="submit" class="btn btn-primary" [disabled]="creando">
+        <i class="fa fa-plus"></i> Crear usuario
+      </button>
+    </form>
+
+    <!-- Modal de confirmación -->
+    <app-sesion-modal
+      [visible]="modalConfirmar.visible"
+      titulo="Confirmar acción"
+      [mensaje]="
+        modalConfirmar.accion === 'baja'
+          ? '¿Deshabilitar usuario?'
+          : '¿Habilitar usuario?'
+      "
+      textoAceptar="Sí"
+      textoCancelar="Cancelar"
+      icono="fa-question-circle"
+      (aceptar)="confirmarAccion()"
+      (cancelar)="cerrarModalConfirmar()"
+    ></app-sesion-modal>
+
+    <!-- Modal de error -->
+    <app-sesion-modal
+      [visible]="modalError.visible"
+      titulo="Error"
+      [mensaje]="modalError.mensaje"
+      textoAceptar="Cerrar"
+      [textoCancelar]="''"
+      icono="fa-exclamation-circle"
+      (aceptar)="cerrarModalError()"
+      (cancelar)="cerrarModalError()"
+    ></app-sesion-modal>
+  </div>
+</div>

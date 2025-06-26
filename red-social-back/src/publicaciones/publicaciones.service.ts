@@ -42,8 +42,7 @@ export class PublicacionesService {
       .find(filtro)
       .skip(offset)
       .limit(limit)
-      .populate('usuario', 'nombre imagen');
-
+      .populate('usuario', 'nombre imagen activo');
     if (orden === 'likes') {
       query = query.sort({ likes: -1, createdAt: -1 });
     } else {
@@ -51,8 +50,17 @@ export class PublicacionesService {
     }
     const publicaciones = await query.exec();
 
+    // Filtrar publicaciones cuyo usuario esté deshabilitado
+    const publicacionesFiltradas = publicaciones.filter(
+      (pub) =>
+        pub.usuario &&
+        typeof pub.usuario === 'object' &&
+        'activo' in pub.usuario &&
+        pub.usuario.activo,
+    );
+
     const publicacionesConComentarios = await Promise.all(
-      publicaciones.map(async (pub) => {
+      publicacionesFiltradas.map(async (pub) => {
         const comentarios = await this.comentarioModel.find({
           publicacion: pub._id,
           activo: true,

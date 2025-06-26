@@ -14,7 +14,7 @@ export class ComentariosService {
   // Traer comentarios paginados y ordenados (más recientes primero)
   async getComentarios(publicacionId: string, offset = 0, limit = 5) {
     return this.comentarioModel
-      .find({ publicacion: publicacionId, activo: true })
+      .find({ publicacion: new Types.ObjectId(publicacionId), activo: true })
       .sort({ createdAt: -1 })
       .skip(offset)
       .limit(limit)

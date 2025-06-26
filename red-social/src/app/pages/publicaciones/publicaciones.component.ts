@@ -1,4 +1,9 @@
-import { Component, OnInit, HostListener } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  HostListener,
+  ChangeDetectorRef,
+} from '@angular/core';
 import { PublicacionService } from '../../services/publicacion/publicacion.service';
 import { AuthService } from '../../services/auth/auth.service';
 import { CommonModule } from '@angular/common';
@@ -6,8 +11,6 @@ import { FormsModule } from '@angular/forms';
 import { PublicacionCardComponent } from '../../shared/publicacion-card/publicacion-card.component';
 import { ImagenUtilService } from '../../services/imagen-util/imagen-util.service';
 import { LoadingSpinnerComponent } from '../../shared/loading-spinner/loading-spinner.component';
-import { PublicacionComponent } from '../publicacion/publicacion.component';
-import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-publicaciones',
@@ -45,7 +48,8 @@ export class PublicacionesComponent implements OnInit {
   constructor(
     private publicacionService: PublicacionService,
     public authService: AuthService,
-    public imagenUtil: ImagenUtilService
+    public imagenUtil: ImagenUtilService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -140,7 +144,11 @@ export class PublicacionesComponent implements OnInit {
     const id = this.modalConfirmar.id;
     this.cerrarModalConfirmar();
     this.publicacionService.eliminarPublicacion(id).subscribe({
-      next: () => this.cargarPublicaciones(),
+      next: () => {
+        this.pagina = 0;
+        this.fin = false;
+        this.cargarPublicaciones();
+      },
       error: () => {
         this.modalError.visible = true;
         this.modalError.mensaje = 'No se pudo eliminar la publicación';
@@ -155,6 +163,7 @@ export class PublicacionesComponent implements OnInit {
 
   eliminarPublicacionLocal(id: string) {
     this.publicaciones = this.publicaciones.filter((pub) => pub._id !== id);
+    this.cdr.detectChanges();
   }
 
   @HostListener('window:scroll', [])

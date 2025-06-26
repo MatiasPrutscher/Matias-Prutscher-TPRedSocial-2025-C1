@@ -42,5 +42,13 @@ export const routes: Routes = [
       ),
     canActivate: [AuthGuard], // Solo usuarios logueados
   },
+  {
+    path: 'dashboard/usuarios',
+    loadComponent: () =>
+      import('./pages/dashboard-usuarios/dashboard-usuarios.component').then(
+        (m) => m.DashboardUsuariosComponent
+      ),
+    canActivate: [AuthGuard], // Solo usuarios logueados
+  },
   { path: '**', redirectTo: 'login' },
 ];

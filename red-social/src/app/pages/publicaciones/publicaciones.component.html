@@ -95,6 +95,7 @@
       <app-publicacion-card
         [publicacion]="pub"
         [usuarioActual]="authService.getUser()"
+        (eliminada)="eliminarPublicacionLocal($event)"
       />
       } @if (cargando) {
       <app-loading-spinner></app-loading-spinner>

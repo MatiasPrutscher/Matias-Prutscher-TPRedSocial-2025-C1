@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { UsuarioPerfil } from '../../interfaces/red-social-model';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
 
 @Injectable({
@@ -12,9 +12,42 @@ export class UsuarioService {
 
   constructor(private http: HttpClient) {}
 
-  getPerfil(): Observable<UsuarioPerfil> {
+  private getAuthHeaders() {
     const token = localStorage.getItem('token');
-    const headers = token ? { Authorization: `Bearer ${token}` } : undefined;
-    return this.http.get<UsuarioPerfil>(`${this.apiUrl}/perfil`, { headers });
+    return token
+      ? new HttpHeaders({ Authorization: `Bearer ${token}` })
+      : new HttpHeaders();
+  }
+
+  getPerfil(): Observable<UsuarioPerfil> {
+    return this.http.get<UsuarioPerfil>(`${this.apiUrl}/perfil`, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  listarUsuarios() {
+    return this.http.get<any[]>(this.apiUrl, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  bajaUsuario(id: string) {
+    return this.http.delete(this.apiUrl + '/' + id, {
+      headers: this.getAuthHeaders(),
+    });
+  }
+
+  altaUsuario(id: string) {
+    return this.http.post(
+      this.apiUrl + '/' + id + '/alta',
+      {},
+      { headers: this.getAuthHeaders() }
+    );
+  }
+
+  crearUsuario(data: any) {
+    return this.http.post(this.apiUrl, data, {
+      headers: this.getAuthHeaders(),
+    });
   }
 }

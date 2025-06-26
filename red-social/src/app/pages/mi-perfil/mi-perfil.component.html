@@ -59,6 +59,7 @@
       <app-publicacion-card
         [publicacion]="pub"
         [usuarioActual]="authService.getUser()"
+        (eliminada)="eliminarPublicacionLocal($event)"
       />
       } @empty {
       <div class="alert alert-info text-center mt-4">

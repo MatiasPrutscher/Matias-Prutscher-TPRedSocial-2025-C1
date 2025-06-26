@@ -89,8 +89,16 @@ export class LoginComponent {
         },
         error: (err) => {
           this.modalError.visible = true;
-          this.modalError.mensaje =
-            'Error en el login: ' + (err.error?.message || '');
+          if (
+            err.error?.message ===
+            'Usuario deshabilitado. Contacte al administrador.'
+          ) {
+            this.modalError.mensaje =
+              'Tu usuario fue deshabilitado. Contactá al administrador.';
+          } else {
+            this.modalError.mensaje =
+              'Error en el login: ' + (err.error?.message || '');
+          }
           this.isSubmitting = false;
         },
       });
