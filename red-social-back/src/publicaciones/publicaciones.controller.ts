@@ -11,6 +11,7 @@ import {
   Param,
   Delete,
   NotFoundException,
+  Put,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { PublicacionesService } from './publicaciones.service';
@@ -83,5 +84,20 @@ export class PublicacionesController {
     const pub = await this.publicacionesService.getPorId(id);
     if (!pub) throw new NotFoundException('Publicación no encontrada');
     return pub;
+  }
+
+  @Put(':id')
+  @UseGuards(AuthGuard('jwt'))
+  async editarPublicacion(
+    @Param('id') id: string,
+    @Body() body: { titulo?: string; mensaje?: string; imagen?: string },
+    @Req() req: any,
+  ) {
+    return this.publicacionesService.editarPublicacion(
+      id,
+      body,
+      req.user.userId,
+      req.user.perfil,
+    );
   }
 }

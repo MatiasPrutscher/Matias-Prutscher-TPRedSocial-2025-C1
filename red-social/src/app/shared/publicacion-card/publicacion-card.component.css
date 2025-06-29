@@ -138,32 +138,23 @@
   margin-bottom: 0.3rem;
 }
 
-/* Botón de eliminar (X) */
-.btn-eliminar-publicacion-x {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.7rem;
-  background: none;
-  border: none;
-  color: #e57373;
-  font-size: 1.5rem;
-  font-weight: bold;
-  cursor: pointer;
-  z-index: 2;
-  transition: color 0.2s, background 0.2s;
-  padding: 0;
-  line-height: 1;
-  width: 2rem;
-  height: 2rem;
-  border-radius: 50%;
+.perfil-feed-ultimo-comentario {
+  background: #232323;
+  border-radius: 0 0 1rem 1rem;
+  padding: 0.5rem 1.5rem 0.5rem 1.5rem;
+  color: #e0e0e0;
+  font-size: 0.98rem;
+  border-top: 1px solid #2228;
+  margin-top: 0;
   display: flex;
   align-items: center;
-  justify-content: center;
+  gap: 0.5rem;
 }
 
-.btn-eliminar-publicacion-x:hover {
-  color: #fff;
-  background: #b71c1c;
+.perfil-feed-ultimo-comentario strong {
+  color: #00bfff;
+  font-size: 1rem;
+  margin-right: 0.4rem;
 }
 
 /* Responsive */
@@ -172,6 +163,7 @@
     max-width: 100%;
   }
 }
+
 /* --- Estilos de Modales --- */
 .modal-backdrop {
   position: fixed;
@@ -207,4 +199,14 @@
 }
 .btn.btn-secondary:hover {
   background: #7022b8;
+}
+
+.comentario-preview-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 0.7rem;
+  border: 2px solid #00bfff;
+  background: #181818;
 }

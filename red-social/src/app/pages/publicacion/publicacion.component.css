@@ -19,6 +19,7 @@
   border-radius: 50%;
   object-fit: cover;
   border: 2px solid #00bfff;
+  margin-right: 0.7rem;
 }
 
 .publicacion-input {
@@ -31,6 +32,10 @@
   font-size: 1rem;
   outline: none;
   transition: all 0.2s;
+  width: 100%;
+  min-height: 60px;
+  resize: vertical;
+  margin-bottom: 0;
 }
 
 .publicacion-btn {
@@ -54,4 +59,59 @@
   max-width: 90%;
   margin-left: auto;
   margin-right: auto;
+}
+
+.comentario {
+  margin-bottom: 1.5rem;
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0.7rem;
+  box-shadow: 0 1px 4px 0 #181818;
+  padding: 0.7rem 2.5rem 0.7rem 0.7rem;
+}
+
+.comentario-header {
+  display: flex;
+  align-items: center;
+  position: relative;
+}
+
+.comentario-edicion {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.comentario-edicion-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  position: static;
+  margin-top: 0.3rem;
+}
+
+.btn-guardar,
+.btn-cancelar {
+  margin-top: 0.5rem;
+  margin-right: 0.5rem;
+  border-radius: 0.5rem;
+  padding: 0.3rem 1rem;
+  border: none;
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.btn-guardar {
+  background: linear-gradient(90deg, #00bfff, #8a2be2);
+  color: #fff;
+}
+
+.btn-cancelar {
+  background: #222;
+  color: #fff;
+}
+
+.comentario-separador {
+  margin: 0 0.4rem;
+  color: #888;
+  font-weight: bold;
 }

@@ -25,7 +25,7 @@ export class ComentariosService {
   // Agregar comentario
   async addComentario(publicacionId: string, usuarioId: string, texto: string) {
     const nuevo = new this.comentarioModel({
-      publicacion: new Types.ObjectId(publicacionId), // <-- Guardar como ObjectId
+      publicacion: new Types.ObjectId(publicacionId),
       usuario: new Types.ObjectId(usuarioId),
       texto,
     });
@@ -71,7 +71,7 @@ export class ComentariosService {
 
   async contarComentarios(publicacionId: string) {
     return this.comentarioModel.countDocuments({
-      publicacion: publicacionId,
+      publicacion: new Types.ObjectId(publicacionId),
       activo: true,
     });
   }

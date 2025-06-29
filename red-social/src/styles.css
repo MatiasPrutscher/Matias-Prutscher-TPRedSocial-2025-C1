@@ -37,10 +37,10 @@ body {
   }
 }
 
-/* --- Botón Eliminar Publicación (X) --- */
+/* --- Botón Eliminar Publicación/Comentario (X) --- */
 .btn-eliminar-publicacion-x {
   position: absolute;
-  top: 0.5rem;
+  top: 0.4rem;
   right: 0.7rem;
   background: none;
   border: none;
@@ -61,6 +61,24 @@ body {
 }
 
 .btn-eliminar-publicacion-x:hover {
-  color: #fff;
-  background: #b71c1c;
+  color: #b71c1c;
+  background: none;
+}
+
+/* --- Botón Editar (lápiz azul) --- */
+.btn-editar-comentario {
+  position: absolute;
+  top: 0.4rem;
+  right: 2.7rem;
+  background: transparent;
+  border: none;
+  color: #00bfff;
+  cursor: pointer;
+  font-size: 1.3rem;
+  transition: color 0.2s;
+  z-index: 2;
+}
+
+.btn-editar-comentario:hover {
+  color: #8a2be2;
 }

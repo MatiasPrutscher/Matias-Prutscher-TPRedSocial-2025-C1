@@ -1,0 +1,103 @@
+.page-bg {
+  background: #18191a;
+  border-radius: 1.2rem;
+  box-shadow: 0 4px 24px #0006;
+  color: #efefef;
+  margin-top: 5rem;
+}
+.dashboard-title {
+  color: #00bfff;
+  margin-bottom: 2rem;
+  font-size: 2rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+}
+.dashboard-estadisticas-chart {
+  background: #232323;
+  border-radius: 1rem;
+  padding: 2rem;
+  box-shadow: 0 2px 8px #0004;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.dashboard-estadisticas-chart canvas {
+  width: 100% !important;
+  margin: 0 auto;
+  display: block;
+}
+.chart-bar-line {
+  overflow-x: auto;
+  width: 100%;
+}
+.chart-bar-line canvas {
+  height: 600px !important;
+  max-width: 100%;
+}
+.chart-pie canvas {
+  max-width: 500px !important;
+  max-height: 500px !important;
+  height: auto !important;
+}
+.dashboard-estadisticas-controls {
+  margin-bottom: 1.5rem;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+.dashboard-estadisticas-controls select {
+  background: #232323;
+  color: #00bfff;
+  border: 1px solid #8a2be2;
+  border-radius: 0.7rem;
+  padding: 0.3rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.estadisticas-date {
+  background: #232323;
+  color: white;
+  border: 1px solid #8a2be2;
+  border-radius: 0.7rem;
+  padding: 0.3rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  outline: none;
+  transition: border 0.2s;
+}
+.estadisticas-date:focus {
+  border: 2px solid #00bfff;
+}
+
+.estadisticas-select {
+  background: #232323;
+  color: #00bfff;
+  border: 1px solid #8a2be2;
+  border-radius: 0.7rem;
+  padding: 0.3rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+@media (max-width: 700px) {
+  .dashboard-estadisticas-controls {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.7rem;
+  }
+  .dashboard-estadisticas-chart {
+    padding: 0.7rem;
+  }
+  .chart-bar-line canvas,
+  .chart-pie canvas {
+    height: 300px !important;
+    max-width: 100% !important;
+  }
+  .page-bg {
+    margin-top: 2rem;
+    padding: 0.5rem;
+  }
+}

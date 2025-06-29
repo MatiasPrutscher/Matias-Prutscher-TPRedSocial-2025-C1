@@ -31,6 +31,14 @@
           ><i class="fa fa-users-cog"></i> Usuarios</a
         >
       </li>
+      <li>
+        <a
+          routerLink="/dashboard/estadisticas"
+          routerLinkActive="active"
+          (click)="cerrarMenu()"
+          ><i class="fa fa-chart-bar"></i> Estadísticas</a
+        >
+      </li>
       }
       <li>
         <a href="#" class="logout-link" (click)="logout($event)">

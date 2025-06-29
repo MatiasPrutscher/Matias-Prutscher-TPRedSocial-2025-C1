@@ -1,6 +1,11 @@
 export interface Comentario {
-  usuario: string;
+  usuario: any;
   texto: string;
+  _id?: string;
+  modificado?: boolean;
+  createdAt?: string;
+  editando?: boolean;
+  textoEdit?: string;
 }
 
 export interface Publicacion {

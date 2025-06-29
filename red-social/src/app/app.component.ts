@@ -41,8 +41,31 @@ export class AppComponent {
     // Seguir reiniciando el contador en cada navegación
     this.router.events.subscribe((event) => {
       if (event instanceof NavigationEnd) {
-        this.authService.iniciarContadorSesion();
+        if (this.authService.getToken()) {
+          this.authService.iniciarContadorSesion();
+        } else {
+          this.authService.mostrarModalSesion = false;
+          clearTimeout(this.authService.timeoutSesion);
+          clearTimeout(this.authService.timeoutAdvertencia);
+        }
       }
     });
+  }
+
+  renovarSesion() {
+    this.authService.refrescarToken().subscribe({
+      next: () => {
+        this.authService.mostrarModalSesion = false;
+        this.authService.iniciarContadorSesion();
+      },
+      error: () => {
+        this.authService.logout();
+      },
+    });
+  }
+
+  cerrarSesionPorInactividad() {
+    this.authService.mostrarModalSesion = false;
+    this.authService.logout();
   }
 }

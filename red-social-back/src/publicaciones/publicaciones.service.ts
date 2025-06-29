@@ -28,7 +28,7 @@ export class PublicacionesService {
   ) {
     const nueva = new this.publicacionModel({
       ...createDto,
-      usuario: usuarioId,
+      usuario: new Types.ObjectId(usuarioId),
       imagen: imagenUrl,
     });
     return nueva.save();
@@ -36,7 +36,7 @@ export class PublicacionesService {
 
   async listar({ orden, usuario, offset, limit }) {
     const filtro: any = { activo: true };
-    if (usuario) filtro.usuario = usuario;
+    if (usuario) filtro.usuario = new Types.ObjectId(usuario);
 
     let query = this.publicacionModel
       .find(filtro)
@@ -59,16 +59,25 @@ export class PublicacionesService {
         pub.usuario.activo,
     );
 
+    // Agregar comentariosCount y el último comentario (con usuario) a cada publicación
     const publicacionesConComentarios = await Promise.all(
       publicacionesFiltradas.map(async (pub) => {
-        const comentarios = await this.comentarioModel.find({
+        const comentariosCount = await this.comentarioModel.countDocuments({
           publicacion: pub._id,
           activo: true,
         });
-        const comentariosCount = comentarios.length;
+
+        // Traer el último comentario activo (más reciente)
+        const ultimoComentario = await this.comentarioModel
+          .findOne({ publicacion: pub._id, activo: true })
+          .sort({ createdAt: -1 })
+          .populate('usuario', 'nombreUsuario imagen')
+          .lean();
+
         return {
           ...pub.toObject(),
           comentariosCount,
+          comentarios: ultimoComentario ? [ultimoComentario] : [],
         };
       }),
     );
@@ -129,5 +138,23 @@ export class PublicacionesService {
       ...pub.toObject(),
       comentariosCount,
     };
+  }
+
+  async editarPublicacion(
+    id: string,
+    data: { titulo?: string; mensaje?: string; imagen?: string },
+    userId: string,
+    perfil: string,
+  ) {
+    const pub = await this.publicacionModel.findById(id);
+    if (!pub) throw new NotFoundException('Publicación no encontrada');
+    if (pub.usuario.toString() !== userId && perfil !== 'administrador') {
+      throw new ForbiddenException('No autorizado');
+    }
+    if (data.titulo) pub.titulo = data.titulo;
+    if (data.mensaje) pub.mensaje = data.mensaje;
+    if (data.imagen !== undefined) pub.imagen = data.imagen;
+    await pub.save();
+    return pub;
   }
 }

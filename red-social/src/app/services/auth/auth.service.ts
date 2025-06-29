@@ -9,8 +9,8 @@ import { environment } from '../../../environments/environment';
 })
 export class AuthService {
   private apiUrl = environment.apiUrl; // URL base del backend
-  private timeoutSesion: any;
-  private timeoutAdvertencia: any;
+  public timeoutSesion: any;
+  public timeoutAdvertencia: any;
   mostrarModalSesion = false;
 
   constructor(private http: HttpClient, private router: Router) {}

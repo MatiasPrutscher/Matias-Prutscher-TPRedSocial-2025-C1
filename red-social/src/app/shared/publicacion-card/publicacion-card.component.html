@@ -13,6 +13,13 @@
     </div>
     @if (puedeEliminar()) {
     <button
+      class="btn-editar-comentario"
+      (click)="abrirModalEditar()"
+      title="Editar publicación"
+    >
+      <i class="fa fa-edit"></i>
+    </button>
+    <button
       class="btn-eliminar-publicacion-x"
       (click)="eliminarPublicacion()"
       title="Eliminar publicación"
@@ -26,12 +33,12 @@
     <p class="perfil-feed-mensaje">{{ publicacion.mensaje }}</p>
     @if (publicacion.imagen) {
     <img
-      *ngIf="publicacion.imagen"
       [src]="getImagenUrl(publicacion.imagen)"
       alt="Publicación"
       class="perfil-feed-img"
     />
     }
+    <!-- Pie de la publicación (likes, comentarios) -->
     <div class="perfil-feed-footer">
       <span class="me-3">
         <i
@@ -54,14 +61,25 @@
         {{ publicacion.comentariosCount || 0 }}
       </span>
     </div>
-    @if (publicacion.comentariosCount > 0) {
-    <div class="perfil-feed-comentarios">
-      @for (comentario of publicacion.comentarios; track comentario.usuario) {
-      <div class="perfil-feed-comentario">
-        <strong>{{ comentario.usuario }}: </strong>
-        <span>{{ comentario.texto }}</span>
-      </div>
-      }
+
+    <!-- Mostrar último comentario SOLO si no es detalle y hay comentarios -->
+    @if (!detalle && publicacion.comentarios && publicacion.comentarios.length >
+    0) {
+    <div class="perfil-feed-ultimo-comentario">
+      <img
+        class="comentario-preview-avatar"
+        [src]="getAvatarUrl(publicacion.comentarios[publicacion.comentarios.length - 1]?.usuario)"
+        alt="avatar"
+      />
+      <strong>
+        {{
+          publicacion.comentarios[publicacion.comentarios.length - 1]?.usuario
+            ?.nombreUsuario
+        }}:
+      </strong>
+      <span>{{
+        publicacion.comentarios[publicacion.comentarios.length - 1]?.texto
+      }}</span>
     </div>
     }
   </div>
@@ -77,4 +95,37 @@
   icono="fa-question-circle"
   (aceptar)="confirmarEliminar()"
   (cancelar)="cancelarEliminar()"
+></app-sesion-modal>
+
+<!-- Modal de edición de publicación -->
+<app-sesion-modal
+  [visible]="modalEditarVisible"
+  titulo="Editar publicación"
+  [mensaje]="''"
+  textoAceptar="Guardar"
+  textoCancelar="Cancelar"
+  icono="fa-edit"
+  (aceptar)="guardarEdicion()"
+  (cancelar)="cerrarModalEditar()"
+>
+  <div class="form-group">
+    <input [(ngModel)]="editTitulo" placeholder="Título" maxlength="80" />
+    <textarea
+      [(ngModel)]="editMensaje"
+      placeholder="Mensaje"
+      maxlength="500"
+    ></textarea>
+  </div>
+</app-sesion-modal>
+
+<!-- Modal de error -->
+<app-sesion-modal
+  [visible]="modalErrorVisible"
+  titulo="Error"
+  [mensaje]="modalErrorMsg"
+  textoAceptar="Cerrar"
+  [textoCancelar]="''"
+  icono="fa-exclamation-triangle"
+  (aceptar)="cerrarModalError()"
+  (cancelar)="cerrarModalError()"
 ></app-sesion-modal>

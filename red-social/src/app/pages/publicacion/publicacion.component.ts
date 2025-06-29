@@ -1,4 +1,4 @@
-import { Component, NgModule, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { PublicacionService } from '../../services/publicacion/publicacion.service';
 import { ComentarioService } from '../../services/comentario/comentario.service';
@@ -8,6 +8,8 @@ import { CommonModule } from '@angular/common';
 import { LoadingSpinnerComponent } from '../../shared/loading-spinner/loading-spinner.component';
 import { FormsModule } from '@angular/forms';
 import { ImagenUtilService } from '../../services/imagen-util/imagen-util.service';
+import { Comentario } from '../../interfaces/red-social-model';
+import { SesionModalComponent } from '../../shared/sesion-modal/sesion-modal.component';
 
 @Component({
   selector: 'app-publicacion',
@@ -16,6 +18,7 @@ import { ImagenUtilService } from '../../services/imagen-util/imagen-util.servic
     CommonModule,
     LoadingSpinnerComponent,
     FormsModule,
+    SesionModalComponent,
   ],
   templateUrl: './publicacion.component.html',
   styleUrls: ['./publicacion.component.css'],
@@ -30,6 +33,12 @@ export class PublicacionComponent implements OnInit {
   pagina = 0;
   limite = 5;
   finComentarios = false;
+  errorModalVisible = false;
+  errorModalMsg = '';
+
+  // Para el modal de confirmación de eliminación
+  comentarioAEliminar: Comentario | null = null;
+  confirmarEliminarVisible = false;
 
   constructor(
     private route: ActivatedRoute,
@@ -71,7 +80,6 @@ export class PublicacionComponent implements OnInit {
       .getComentarios(id, this.pagina * this.limite, this.limite)
       .subscribe({
         next: (coms) => {
-          console.log('Comentarios recibidos:', coms);
           if (append) {
             this.comentarios = [...this.comentarios, ...coms];
           } else {
@@ -79,12 +87,10 @@ export class PublicacionComponent implements OnInit {
           }
           if (coms.length < this.limite) this.finComentarios = true;
           this.cargandoComentarios = false;
-          console.log('Array comentarios en componente:', this.comentarios);
         },
         error: (err) => {
           this.errorMsg = 'No se pudieron cargar los comentarios';
           this.cargandoComentarios = false;
-          console.error('Error al cargar comentarios:', err);
         },
       });
   }
@@ -99,13 +105,85 @@ export class PublicacionComponent implements OnInit {
     this.comentarioService
       .agregarComentario(this.publicacion._id, this.comentarioNuevo)
       .subscribe({
-        next: (nuevo) => {
+        next: (nuevo: Comentario) => {
+          nuevo.usuario = this.authService.getUser();
           this.comentarios.unshift(nuevo);
           this.comentarioNuevo = '';
+          if (
+            this.publicacion &&
+            typeof this.publicacion.comentariosCount === 'number'
+          ) {
+            this.publicacion.comentariosCount++;
+          }
         },
         error: () => {
           this.errorMsg = 'No se pudo agregar el comentario';
         },
       });
+  }
+
+  editarComentario(com: Comentario) {
+    com.editando = true;
+    com.textoEdit = com.texto;
+  }
+
+  cancelarEdicionComentario(com: Comentario) {
+    com.editando = false;
+  }
+
+  guardarComentario(com: Comentario) {
+    if (!com._id || !com.textoEdit) return;
+    this.comentarioService.editarComentario(com._id, com.textoEdit).subscribe({
+      next: () => {
+        com.texto = com.textoEdit!;
+        com.editando = false;
+        com.modificado = true;
+      },
+      error: () => {
+        this.errorModalMsg = 'No se pudo editar el comentario';
+        this.errorModalVisible = true;
+      },
+    });
+  }
+
+  cerrarErrorModal() {
+    this.errorModalVisible = false;
+  }
+
+  // --- Eliminación con modal de confirmación ---
+  pedirConfirmacionEliminar(com: Comentario) {
+    this.comentarioAEliminar = com;
+    this.confirmarEliminarVisible = true;
+  }
+
+  confirmarEliminarComentario() {
+    if (!this.comentarioAEliminar) return;
+    this.comentarioService.eliminarComentario(this.comentarioAEliminar._id!).subscribe({
+      next: () => {
+        this.comentarios = this.comentarios.filter(
+          (c) => c._id !== this.comentarioAEliminar!._id
+        );
+        if (
+          this.publicacion &&
+          typeof this.publicacion.comentariosCount === 'number' &&
+          this.publicacion.comentariosCount > 0
+        ) {
+          this.publicacion.comentariosCount--;
+        }
+        this.confirmarEliminarVisible = false;
+        this.comentarioAEliminar = null;
+      },
+      error: () => {
+        this.errorModalMsg = 'No se pudo eliminar el comentario';
+        this.errorModalVisible = true;
+        this.confirmarEliminarVisible = false;
+        this.comentarioAEliminar = null;
+      },
+    });
+  }
+
+  cancelarEliminarComentario() {
+    this.confirmarEliminarVisible = false;
+    this.comentarioAEliminar = null;
   }
 }

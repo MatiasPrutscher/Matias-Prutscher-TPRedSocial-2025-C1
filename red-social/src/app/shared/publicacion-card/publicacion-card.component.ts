@@ -5,10 +5,12 @@ import { PublicacionService } from '../../services/publicacion/publicacion.servi
 import { AuthService } from '../../services/auth/auth.service';
 import { SesionModalComponent } from '../sesion-modal/sesion-modal.component';
 import { Router } from '@angular/router';
+import { FormsModule } from '@angular/forms';
+import { Publicacion } from '../../interfaces/red-social-model';
 
 @Component({
   selector: 'app-publicacion-card',
-  imports: [CommonModule, SesionModalComponent],
+  imports: [CommonModule, SesionModalComponent, FormsModule],
   templateUrl: './publicacion-card.component.html',
   styleUrl: './publicacion-card.component.css',
 })
@@ -18,6 +20,11 @@ export class PublicacionCardComponent {
   @Input() detalle = false;
   @Output() eliminada = new EventEmitter<string>();
   mostrarModalConfirmar = false;
+  modalEditarVisible = false;
+  modalErrorVisible = false;
+  editTitulo = '';
+  editMensaje = '';
+  modalErrorMsg = '';
 
   constructor(
     public imagenUtil: ImagenUtilService,
@@ -89,5 +96,38 @@ export class PublicacionCardComponent {
 
   abrirComentarios() {
     this.router.navigate(['/publicacion', this.publicacion._id]);
+  }
+
+  abrirModalEditar() {
+    this.editTitulo = this.publicacion.titulo;
+    this.editMensaje = this.publicacion.mensaje;
+    this.modalEditarVisible = true;
+  }
+
+  cerrarModalEditar() {
+    this.modalEditarVisible = false;
+  }
+
+  guardarEdicion() {
+    this.publicacionService
+      .editarPublicacion(this.publicacion._id, {
+        titulo: this.editTitulo,
+        mensaje: this.editMensaje,
+      })
+      .subscribe({
+        next: (pubEditada: Publicacion) => {
+          this.publicacion.titulo = pubEditada.titulo;
+          this.publicacion.mensaje = pubEditada.mensaje;
+          this.cerrarModalEditar();
+        },
+        error: () => {
+          this.modalErrorMsg = 'No se pudo editar la publicación';
+          this.modalErrorVisible = true;
+        },
+      });
+  }
+
+  cerrarModalError() {
+    this.modalErrorVisible = false;
   }
 }

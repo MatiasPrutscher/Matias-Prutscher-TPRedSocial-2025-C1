@@ -35,10 +35,52 @@
     </form>
     @for (com of comentarios; track com._id) {
     <div class="comentario">
-      <b>{{ com.usuario?.nombreUsuario }} </b>
-      <span class="fecha">{{ com.createdAt | date : "short" }}</span>
+      <div class="comentario-header">
+        <img
+          class="publicacion-avatar"
+          [src]="imagenUtil.getAvatarUrl(com.usuario)"
+          alt="avatar"
+        />
+        <b>{{ com.usuario?.nombreUsuario }}</b>
+        <span class="comentario-separador">·</span>
+        <span class="fecha">{{ com.createdAt | date : "short" }}</span>
+        @if (com.usuario?._id === authService.getUser()?._id ||
+        authService.getUser()?.perfil === 'administrador') {
+        <button
+          class="btn-editar-comentario"
+          title="Editar comentario"
+          (click)="editarComentario(com)"
+        >
+          <i class="fa fa-edit"></i>
+        </button>
+        <button
+          class="btn-eliminar-publicacion-x"
+          title="Eliminar comentario"
+          (click)="pedirConfirmacionEliminar(com)"
+        >
+          ×
+        </button>
+        }
+      </div>
+      @if (!com.editando) {
       <p>{{ com.texto }}</p>
-      @if (com.modificado) {
+      } @if (com.editando) {
+      <div class="comentario-edicion">
+        <textarea
+          [(ngModel)]="com.textoEdit"
+          class="publicacion-input"
+          rows="2"
+        ></textarea>
+        <div class="comentario-edicion-actions">
+          <button class="btn-guardar" (click)="guardarComentario(com)">
+            Guardar
+          </button>
+          <button class="btn-cancelar" (click)="cancelarEdicionComentario(com)">
+            Cancelar
+          </button>
+        </div>
+      </div>
+      } @if (com.modificado) {
       <span class="badge badge-warning">Editado</span>
       }
     </div>
@@ -58,3 +100,26 @@
   <div class="alert alert-danger">{{ errorMsg }}</div>
   }
 </div>
+<!-- Modal de confirmación de eliminación -->
+<app-sesion-modal
+  [visible]="confirmarEliminarVisible"
+  titulo="Eliminar comentario"
+  mensaje="¿Seguro que deseas eliminar este comentario?"
+  textoAceptar="Eliminar"
+  textoCancelar="Cancelar"
+  icono="fa-trash"
+  (aceptar)="confirmarEliminarComentario()"
+  (cancelar)="cancelarEliminarComentario()"
+></app-sesion-modal>
+
+<!-- Modal de error -->
+<app-sesion-modal
+  [visible]="errorModalVisible"
+  titulo="Error"
+  [mensaje]="errorModalMsg"
+  textoAceptar="Cerrar"
+  [textoCancelar]="''"
+  icono="fa-exclamation-triangle"
+  (aceptar)="cerrarErrorModal()"
+  (cancelar)="cerrarErrorModal()"
+></app-sesion-modal>

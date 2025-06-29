@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
-import { AuthGuard } from './guards/auth.guard';
-import { LoginRedirectGuard } from './guards/login-redirect-guard.guard';
+import { AuthGuard } from './guards/auth/auth.guard';
+import { LoginRedirectGuard } from './guards/login/login-redirect.guard';
+import { AdminGuard } from './guards/admin/admin.guard';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -48,7 +49,15 @@ export const routes: Routes = [
       import('./pages/dashboard-usuarios/dashboard-usuarios.component').then(
         (m) => m.DashboardUsuariosComponent
       ),
-    canActivate: [AuthGuard], // Solo usuarios logueados
+    canActivate: [AdminGuard], // Solo admins si corresponde
+  },
+  {
+    path: 'dashboard/estadisticas',
+    loadComponent: () =>
+      import(
+        './pages/dashboard-estadisticas/dashboard-estadisticas.component'
+      ).then((m) => m.DashboardEstadisticasComponent),
+    canActivate: [AdminGuard], // Solo admins si corresponde
   },
   { path: '**', redirectTo: 'login' },
 ];

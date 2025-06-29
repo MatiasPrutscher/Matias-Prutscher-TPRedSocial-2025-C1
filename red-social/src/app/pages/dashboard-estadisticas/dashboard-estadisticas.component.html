@@ -1,0 +1,52 @@
+<div class="page-bg container py-4">
+  <h2 class="dashboard-title"><i class="fa fa-chart-bar"></i> Estadísticas</h2>
+
+  <div class="dashboard-estadisticas-controls">
+    <label for="tipoGrafico">Tipo de gráfico:</label>
+    <select
+      id="tipoGrafico"
+      [(ngModel)]="chartType"
+      class="estadisticas-select"
+    >
+      <option value="bar">Barras</option>
+      <option value="line">Líneas</option>
+      <option value="pie">Torta</option>
+      <option value="doughnut">Dona</option>
+    </select>
+    <label for="fechaDesde">Desde:</label>
+    <input
+      type="date"
+      id="fechaDesde"
+      [(ngModel)]="fechaDesde"
+      [min]="primerFecha.substring(0, 10)"
+      [max]="fechaHasta.substring(0, 10)"
+      (change)="cargarDatos()"
+      class="estadisticas-date"
+    />
+    <label for="fechaHasta">Hasta:</label>
+    <input
+      type="date"
+      id="fechaHasta"
+      [(ngModel)]="fechaHasta"
+      [min]="fechaDesde.substring(0, 10)"
+      [max]="hoy"
+      (change)="cargarDatos()"
+      class="estadisticas-date"
+    />
+  </div>
+
+  <div
+    class="dashboard-estadisticas-chart"
+    [ngClass]="{
+      'chart-pie': chartType === 'pie' || chartType === 'doughnut',
+      'chart-bar-line': chartType === 'bar' || chartType === 'line'
+    }"
+  >
+    <canvas
+      baseChart
+      [data]="chartData"
+      [options]="chartOptions"
+      [type]="chartType"
+    ></canvas>
+  </div>
+</div>
