@@ -68,7 +68,11 @@
     <div class="perfil-feed-ultimo-comentario">
       <img
         class="comentario-preview-avatar"
-        [src]="getAvatarUrl(publicacion.comentarios[publicacion.comentarios.length - 1]?.usuario)"
+        [src]="
+          getAvatarUrl(
+            publicacion.comentarios[publicacion.comentarios.length - 1]?.usuario
+          )
+        "
         alt="avatar"
       />
       <strong>
@@ -108,12 +112,19 @@
   (aceptar)="guardarEdicion()"
   (cancelar)="cerrarModalEditar()"
 >
-  <div class="form-group">
-    <input [(ngModel)]="editTitulo" placeholder="Título" maxlength="80" />
+  <div class="form-group form-editar-publicacion">
+    <input
+      [(ngModel)]="editTitulo"
+      placeholder="Título"
+      maxlength="80"
+      class="publicacion-input"
+    />
     <textarea
       [(ngModel)]="editMensaje"
       placeholder="Mensaje"
       maxlength="500"
+      class="publicacion-input"
+      rows="3"
     ></textarea>
   </div>
 </app-sesion-modal>

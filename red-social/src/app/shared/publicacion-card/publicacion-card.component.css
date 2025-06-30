@@ -210,3 +210,28 @@
   border: 2px solid #00bfff;
   background: #181818;
 }
+
+.form-editar-publicacion {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form-editar-publicacion input,
+.form-editar-publicacion textarea {
+  background: #232323;
+  color: #efefef;
+  border: 1px solid #2a2a2a;
+  border-radius: 0.7rem;
+  padding: 0.7rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  outline: none;
+  transition: border 0.2s;
+}
+
+.form-editar-publicacion input:focus,
+.form-editar-publicacion textarea:focus {
+  border: 2px solid #00bfff;
+}
