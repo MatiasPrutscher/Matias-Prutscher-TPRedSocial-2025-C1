@@ -54,7 +54,10 @@ export class AuthController {
     if (createUsuarioDto.password !== createUsuarioDto.repetirPassword) {
       throw new BadRequestException('Las contraseñas no coinciden');
     }
-    return this.authService.register(createUsuarioDto, imagen);
+    const usuario = await this.authService.register(createUsuarioDto, imagen);
+    // Generar token igual que en login
+    const token = this.authService.generarToken(usuario);
+    return { usuario, token };
   }
 
   @Post('login')
