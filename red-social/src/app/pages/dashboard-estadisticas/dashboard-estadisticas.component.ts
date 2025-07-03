@@ -30,6 +30,7 @@ export class DashboardEstadisticasComponent implements OnInit {
   primerFecha: string = '';
   fechaDesde: string = '';
   fechaHasta: string = '';
+  tipoEstadistica: string = 'publicaciones';
 
   constructor(private estadisticasService: EstadisticasService) {}
 
@@ -44,14 +45,36 @@ export class DashboardEstadisticasComponent implements OnInit {
   }
 
   cargarDatos() {
-    this.estadisticasService
-      .getPublicacionesPorUsuario(this.fechaDesde, this.fechaHasta)
-      .subscribe((data) => {
-        console.log('Datos recibidos:', data);
-        this.chartData.labels = data.map((d) => d.usuario);
-        this.chartData.datasets[0].data = data.map((d) => d.cantidad);
-        this.updateColors();
-      });
+    if (this.tipoEstadistica === 'publicaciones') {
+      this.estadisticasService
+        .getPublicacionesPorUsuario(this.fechaDesde, this.fechaHasta)
+        .subscribe((data) => {
+          this.chartData.labels = data.map((d) => d.usuario);
+          this.chartData.datasets[0].data = data.map((d) => d.cantidad);
+          this.chartData.datasets[0].label = 'Publicaciones';
+          this.updateColors();
+        });
+    } else if (this.tipoEstadistica === 'comentariosTotales') {
+      this.estadisticasService
+        .getComentariosTotales(this.fechaDesde, this.fechaHasta)
+        .subscribe((data) => {
+          this.chartData.labels = ['Comentarios'];
+          this.chartData.datasets[0].data = [data.total];
+          this.chartData.datasets[0].label = 'Comentarios totales';
+          this.updateColors();
+        });
+    } else if (this.tipoEstadistica === 'comentariosPorPublicacion') {
+      this.estadisticasService
+        .getComentariosPorPublicacion(this.fechaDesde, this.fechaHasta)
+        .subscribe((data) => {
+          this.chartData.labels = data.map(
+            (d) => d.titulo?.[0] || 'Sin título'
+          );
+          this.chartData.datasets[0].data = data.map((d) => d.cantidad);
+          this.chartData.datasets[0].label = 'Comentarios por publicación';
+          this.updateColors();
+        });
+    }
   }
 
   get chartOptions(): ChartOptions {

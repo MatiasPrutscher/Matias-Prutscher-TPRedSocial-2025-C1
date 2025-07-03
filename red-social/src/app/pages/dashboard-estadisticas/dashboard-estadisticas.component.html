@@ -33,6 +33,14 @@
       (change)="cargarDatos()"
       class="estadisticas-date"
     />
+    <label for="tipoEstadistica">Tipo de estadística:</label>
+    <select [(ngModel)]="tipoEstadistica" (change)="cargarDatos()">
+      <option value="publicaciones">Publicaciones por usuario</option>
+      <option value="comentariosTotales">Comentarios totales</option>
+      <option value="comentariosPorPublicacion">
+        Comentarios por publicación
+      </option>
+    </select>
   </div>
 
   <div

@@ -36,4 +36,28 @@ export class EstadisticasService {
       { headers }
     );
   }
+
+  getComentariosTotales(desde: string, hasta: string) {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.get<{ total: number }>(
+      environment.apiUrl +
+        `/estadisticas/comentarios-totales?desde=${desde}&hasta=${hasta}`,
+      { headers }
+    );
+  }
+
+  getComentariosPorPublicacion(desde: string, hasta: string) {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.get<any[]>(
+      environment.apiUrl +
+        `/estadisticas/comentarios-por-publicacion?desde=${desde}&hasta=${hasta}`,
+      { headers }
+    );
+  }
 }
