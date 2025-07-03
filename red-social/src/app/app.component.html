@@ -1,7 +1,8 @@
 <app-navbar></app-navbar>
 @if (cargando) {
 <app-loading-spinner></app-loading-spinner> } @else { @if
-(authService.mostrarModalSesion) { <app-sesion-modal
+(authService.mostrarModalSesion) {
+<app-sesion-modal
   [visible]="authService.mostrarModalSesion"
   titulo="Sesión por expirar"
   mensaje="Tu sesión está por expirar. ¿Deseás renovarla?"
@@ -10,5 +11,5 @@
   icono="fa-clock"
   (aceptar)="renovarSesion()"
   (cancelar)="cerrarSesionPorInactividad()"
-></app-sesion-modal> }
-<router-outlet></router-outlet> }
+></app-sesion-modal>
+} <router-outlet></router-outlet> }

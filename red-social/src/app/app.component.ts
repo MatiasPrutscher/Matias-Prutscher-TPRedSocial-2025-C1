@@ -4,6 +4,7 @@ import { NavbarComponent } from './shared/navbar/navbar.component';
 import { SesionModalComponent } from './shared/sesion-modal/sesion-modal.component';
 import { AuthService } from './services/auth/auth.service';
 import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinner.component';
+import { PromptUpdateService } from './services/pwa/prompt-update/prompt-update.service'; // Asegúrate de importar el servicio
 
 @Component({
   selector: 'app-root',
@@ -19,7 +20,11 @@ import { LoadingSpinnerComponent } from './shared/loading-spinner/loading-spinne
 export class AppComponent {
   cargando = true;
 
-  constructor(public authService: AuthService, private router: Router) {
+  constructor(
+    public authService: AuthService,
+    private router: Router,
+    private promptUpdateService: PromptUpdateService
+  ) {
     // Validar token al iniciar la app
     this.authService.autorizar().subscribe({
       next: () => {
