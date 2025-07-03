@@ -86,4 +86,26 @@ export class UsuariosService {
     const { password, ...resto } = usuario.toObject();
     return resto;
   }
+
+  async editarUsuario(id: string, updateData: any, perfil: string) {
+    if (perfil !== 'administrador')
+      throw new ForbiddenException('No autorizado');
+
+    const usuario = await this.usuarioModel.findById(id);
+    if (!usuario) throw new NotFoundException('Usuario no encontrado');
+
+    // Actualizar solo los campos permitidos
+    if (updateData.perfil) usuario.perfil = updateData.perfil;
+    if (updateData.nombre) usuario.nombre = updateData.nombre;
+    if (updateData.apellido) usuario.apellido = updateData.apellido;
+    if (updateData.mail) usuario.mail = updateData.mail;
+    if (updateData.nombreUsuario)
+      usuario.nombreUsuario = updateData.nombreUsuario;
+
+    await usuario.save();
+
+    // No devolver la contraseña
+    const { password, ...usuarioSinPassword } = usuario.toObject();
+    return usuarioSinPassword;
+  }
 }

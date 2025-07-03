@@ -31,9 +31,15 @@
             <td>{{ u.mail }}</td>
             <td>{{ u.nombreUsuario }}</td>
             <td>
-              <span [class.admin]="u.perfil === 'administrador'">
-                {{ u.perfil | titlecase }}
-              </span>
+              <select
+                [(ngModel)]="u.perfil"
+                (change)="cambiarPerfil(u._id, u.perfil)"
+                class="perfil-select"
+                [class.admin]="u.perfil === 'administrador'"
+              >
+                <option value="usuario">Usuario</option>
+                <option value="administrador">Administrador</option>
+              </select>
             </td>
             <td>
               <span

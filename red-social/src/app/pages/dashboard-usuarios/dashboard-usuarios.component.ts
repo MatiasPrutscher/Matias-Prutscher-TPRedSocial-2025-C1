@@ -129,4 +129,20 @@ export class DashboardUsuariosComponent implements OnInit {
   esAdmin() {
     return this.authService.getUser()?.perfil === 'administrador';
   }
+
+  cambiarPerfil(usuarioId: string, nuevoPerfil: string) {
+    this.usuarioService
+      .editarUsuario(usuarioId, { perfil: nuevoPerfil })
+      .subscribe({
+        next: () => {
+          console.log('Perfil actualizado');
+        },
+        error: (err) => {
+          this.modalError.visible = true;
+          this.modalError.mensaje =
+            err.error?.message || 'Error al cambiar perfil';
+          this.cargarUsuarios(); // Revertir cambio
+        },
+      });
+  }
 }

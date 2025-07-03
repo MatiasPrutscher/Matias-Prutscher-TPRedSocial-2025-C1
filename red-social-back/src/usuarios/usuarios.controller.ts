@@ -1,4 +1,14 @@
-import { Controller, Get, Req, UseGuards, Post, Delete, Param, Body } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Req,
+  UseGuards,
+  Post,
+  Delete,
+  Param,
+  Body,
+  Put,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { UsuariosService } from './usuarios.service';
 
@@ -38,5 +48,15 @@ export class UsuariosController {
   async crearUsuario(@Body() dto, @Req() req) {
     // Solo admin
     return this.usuariosService.crearUsuario(dto, req.user.perfil);
+  }
+
+  @Put(':id')
+  @UseGuards(AuthGuard('jwt'))
+  async editarUsuario(
+    @Param('id') id: string,
+    @Body() updateData: any,
+    @Req() req,
+  ) {
+    return this.usuariosService.editarUsuario(id, updateData, req.user.perfil);
   }
 }

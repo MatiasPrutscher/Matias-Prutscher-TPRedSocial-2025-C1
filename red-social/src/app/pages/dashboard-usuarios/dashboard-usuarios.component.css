@@ -140,6 +140,27 @@
   font-size: 1rem;
 }
 
+.perfil-select {
+  background: #23272f;
+  color: #efefef;
+  border: 1px solid #2a2a2a;
+  border-radius: 0.5rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.9rem;
+  outline: none;
+  cursor: pointer;
+  transition: border 0.2s;
+}
+
+.perfil-select:focus {
+  border-color: #00bfff;
+}
+
+.perfil-select.admin {
+  color: #ffd600;
+  font-weight: 700;
+}
+
 /* Responsive */
 @media (max-width: 900px) {
   .dashboard-usuarios-card {

@@ -50,4 +50,14 @@ export class UsuarioService {
       headers: this.getAuthHeaders(),
     });
   }
+
+  editarUsuario(id: string, data: any): Observable<any> {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.put(`${environment.apiUrl}/usuarios/${id}`, data, {
+      headers,
+    });
+  }
 }
