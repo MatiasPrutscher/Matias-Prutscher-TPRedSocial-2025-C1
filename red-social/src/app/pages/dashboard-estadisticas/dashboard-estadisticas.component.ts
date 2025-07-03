@@ -79,6 +79,21 @@ export class DashboardEstadisticasComponent implements OnInit {
   }
 
   get chartOptions(): ChartOptions {
+    let title = '';
+    switch (this.tipoEstadistica) {
+      case 'publicaciones':
+        title = 'Publicaciones por usuario';
+        break;
+      case 'comentariosPorUsuario':
+        title = 'Comentarios por usuario';
+        break;
+      case 'comentariosPorPublicacion':
+        title = 'Comentarios por publicación';
+        break;
+      default:
+        title = 'Estadísticas';
+    }
+
     const tooMany = this.chartData.labels.length > 15;
     if (this.chartType === 'pie' || this.chartType === 'doughnut') {
       return {
@@ -91,7 +106,7 @@ export class DashboardEstadisticasComponent implements OnInit {
           },
           title: {
             display: true,
-            text: 'Publicaciones por usuario',
+            text: title,
             color: '#8a2be2',
             font: { size: 18, weight: 'bold' },
           },
@@ -107,7 +122,7 @@ export class DashboardEstadisticasComponent implements OnInit {
         },
         title: {
           display: true,
-          text: 'Publicaciones por usuario',
+          text: title,
           color: '#8a2be2',
           font: { size: 18, weight: 'bold' },
         },
