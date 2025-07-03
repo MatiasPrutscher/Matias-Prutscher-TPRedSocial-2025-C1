@@ -60,4 +60,16 @@ export class EstadisticasService {
       { headers }
     );
   }
+
+  getComentariosPorUsuario(desde: string, hasta: string) {
+    const token = localStorage.getItem('token');
+    const headers = new HttpHeaders({
+      Authorization: `Bearer ${token}`,
+    });
+    return this.http.get<any[]>(
+      environment.apiUrl +
+        `/estadisticas/comentarios-por-usuario?desde=${desde}&hasta=${hasta}`,
+      { headers }
+    );
+  }
 }

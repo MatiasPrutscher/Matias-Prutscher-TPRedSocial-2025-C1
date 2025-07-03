@@ -107,6 +107,39 @@ export class EstadisticasService {
     ]);
   }
 
+  async comentariosPorUsuario(desde: Date, hasta: Date) {
+    return this.comentarioModel.aggregate([
+      {
+        $match: {
+          createdAt: { $gte: desde, $lte: hasta },
+          activo: true,
+        },
+      },
+      {
+        $group: {
+          _id: '$usuario',
+          cantidad: { $sum: 1 },
+        },
+      },
+      {
+        $lookup: {
+          from: 'usuarios',
+          localField: '_id',
+          foreignField: '_id',
+          as: 'usuarioInfo',
+        },
+      },
+      { $unwind: '$usuarioInfo' },
+      {
+        $project: {
+          usuario: '$usuarioInfo.nombreUsuario',
+          cantidad: 1,
+        },
+      },
+      { $sort: { cantidad: -1 } },
+    ]);
+  }
+
   async getPrimerFechaPublicacion() {
     return this.publicacionModel
       .findOne({})

@@ -54,13 +54,13 @@ export class DashboardEstadisticasComponent implements OnInit {
           this.chartData.datasets[0].label = 'Publicaciones';
           this.updateColors();
         });
-    } else if (this.tipoEstadistica === 'comentariosTotales') {
+    } else if (this.tipoEstadistica === 'comentariosPorUsuario') {
       this.estadisticasService
-        .getComentariosTotales(this.fechaDesde, this.fechaHasta)
+        .getComentariosPorUsuario(this.fechaDesde, this.fechaHasta)
         .subscribe((data) => {
-          this.chartData.labels = ['Comentarios'];
-          this.chartData.datasets[0].data = [data.total];
-          this.chartData.datasets[0].label = 'Comentarios totales';
+          this.chartData.labels = data.map((d) => d.usuario);
+          this.chartData.datasets[0].data = data.map((d) => d.cantidad);
+          this.chartData.datasets[0].label = 'Comentarios por usuario';
           this.updateColors();
         });
     } else if (this.tipoEstadistica === 'comentariosPorPublicacion') {
@@ -68,7 +68,8 @@ export class DashboardEstadisticasComponent implements OnInit {
         .getComentariosPorPublicacion(this.fechaDesde, this.fechaHasta)
         .subscribe((data) => {
           this.chartData.labels = data.map(
-            (d) => d.titulo?.[0] || 'Sin título'
+            (d) =>
+              (Array.isArray(d.titulo) ? d.titulo[0] : d.titulo) || 'Sin título'
           );
           this.chartData.datasets[0].data = data.map((d) => d.cantidad);
           this.chartData.datasets[0].label = 'Comentarios por publicación';

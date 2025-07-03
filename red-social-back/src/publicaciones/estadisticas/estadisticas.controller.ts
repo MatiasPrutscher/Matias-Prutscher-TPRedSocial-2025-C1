@@ -50,6 +50,19 @@ export class EstadisticasController {
     );
   }
 
+  @Get('comentarios-por-usuario')
+  async comentariosPorUsuario(
+    @Query('desde') desde: string,
+    @Query('hasta') hasta: string,
+    @Req() req,
+  ) {
+    if (!this.isAdmin(req)) return { error: 'No autorizado' };
+    return this.estadisticasService.comentariosPorUsuario(
+      new Date(desde),
+      new Date(hasta),
+    );
+  }
+
   @Get('primer-fecha-publicacion')
   async getPrimerFechaPublicacion() {
     const pub =
