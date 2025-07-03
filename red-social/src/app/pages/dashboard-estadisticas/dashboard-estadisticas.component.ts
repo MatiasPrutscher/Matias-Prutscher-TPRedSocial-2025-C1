@@ -45,9 +45,19 @@ export class DashboardEstadisticasComponent implements OnInit {
   }
 
   cargarDatos() {
+    // Configurar fechas para evitar errores por zona horaria
+    const desdeDate = new Date(this.fechaDesde);
+    const hastaDate = new Date(this.fechaHasta);
+
+    desdeDate.setUTCHours(0, 0, 0, 0);
+    hastaDate.setUTCHours(23, 59, 59, 999);
+
+    const fechaDesdeUTC = desdeDate.toISOString();
+    const fechaHastaUTC = hastaDate.toISOString();
+
     if (this.tipoEstadistica === 'publicaciones') {
       this.estadisticasService
-        .getPublicacionesPorUsuario(this.fechaDesde, this.fechaHasta)
+        .getPublicacionesPorUsuario(fechaDesdeUTC, fechaHastaUTC)
         .subscribe((data) => {
           this.chartData.labels = data.map((d) => d.usuario);
           this.chartData.datasets[0].data = data.map((d) => d.cantidad);
@@ -56,7 +66,7 @@ export class DashboardEstadisticasComponent implements OnInit {
         });
     } else if (this.tipoEstadistica === 'comentariosPorUsuario') {
       this.estadisticasService
-        .getComentariosPorUsuario(this.fechaDesde, this.fechaHasta)
+        .getComentariosPorUsuario(fechaDesdeUTC, fechaHastaUTC)
         .subscribe((data) => {
           this.chartData.labels = data.map((d) => d.usuario);
           this.chartData.datasets[0].data = data.map((d) => d.cantidad);
@@ -65,7 +75,7 @@ export class DashboardEstadisticasComponent implements OnInit {
         });
     } else if (this.tipoEstadistica === 'comentariosPorPublicacion') {
       this.estadisticasService
-        .getComentariosPorPublicacion(this.fechaDesde, this.fechaHasta)
+        .getComentariosPorPublicacion(fechaDesdeUTC, fechaHastaUTC)
         .subscribe((data) => {
           this.chartData.labels = data.map(
             (d) =>
